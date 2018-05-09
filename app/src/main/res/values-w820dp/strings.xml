@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Settings</string>
+    <string name="register">Register</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="rain">Rain</string>
+    <string name="icy">Icy</string>
+    <string name="sunny">Sunny</string>
+    <string name="windy">Windy</string>
+    <string name="radiobutton">RadioButton</string>
+    <string name="thunderstorm">Thunderstorm</string>
+    <string name="hailstone">Hailstone</string>
+    <string name="ok">Acept</string>
+    <string name="cancel">Cancel</string>
+    <string name="cloudy">Cloudy</string>
+</resources>

@@ -12,11 +12,6 @@
     tools:context="edu.eci.cosw.climapp.controller.LoginActivity">
 
     <!-- Login progress -->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:contentDescription=""
-        android:src="@drawable/logo" />
 
     <ProgressBar
         android:id="@+id/login_progress"
@@ -29,7 +24,7 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -106,4 +101,11 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <ImageView
+        android:layout_width="314dp"
+        android:layout_height="215dp"
+        android:contentDescription=""
+        android:src="@drawable/logo" />
+
 </LinearLayout>
