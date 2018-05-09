@@ -62,6 +62,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private boolean userValid = false;
     public static final String TOKEN_NAME = "Token";
     public static final String PREFS_NAME = "MyPrefsFile";
+    public static final String NAME_NAME = "name";
+    public static final String PASSWORD_NAME = "Password";
 
 
     @Override
@@ -366,6 +368,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void goToMain() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(TOKEN_NAME,token);
+        startActivity(intent);
+    }
+
+    public void goToSignUp(View view) {
+        Intent intent = new Intent(this, SignUp.class);
+        intent.putExtra(TOKEN_NAME,token);
+        intent.putExtra(NAME_NAME, mEmailView.getText().toString());
+        intent.putExtra(PASSWORD_NAME, mPasswordView.getText().toString());
         startActivity(intent);
     }
 

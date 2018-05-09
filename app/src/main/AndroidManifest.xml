@@ -48,7 +48,8 @@
         <activity
             android:name=".controller.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".controller.SignUp"></activity>
     </application>
 
 </manifest>
