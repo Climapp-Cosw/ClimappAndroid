@@ -372,7 +372,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void goToSignUp(View view) {
-        Intent intent = new Intent(this, SignUp.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
         intent.putExtra(TOKEN_NAME,token);
         intent.putExtra(NAME_NAME, mEmailView.getText().toString());
         intent.putExtra(PASSWORD_NAME, mPasswordView.getText().toString());

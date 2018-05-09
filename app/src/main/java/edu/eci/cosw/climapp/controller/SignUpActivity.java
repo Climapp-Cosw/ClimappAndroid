@@ -7,7 +7,7 @@ import android.view.View;
 
 import edu.eci.cosw.climapp.R;
 
-public class SignUp extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

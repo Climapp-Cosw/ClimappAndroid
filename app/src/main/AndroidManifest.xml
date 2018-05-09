@@ -49,7 +49,7 @@
             android:name=".controller.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".controller.SignUp"></activity>
+        <activity android:name=".controller.SignUpActivity"></activity>
     </application>
 
 </manifest>
