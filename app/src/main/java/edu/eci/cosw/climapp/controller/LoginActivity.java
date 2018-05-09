@@ -366,7 +366,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void goToMain() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MapReportActivity.class);
         intent.putExtra(TOKEN_NAME,token);
         startActivity(intent);
     }
