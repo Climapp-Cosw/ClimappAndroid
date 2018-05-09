@@ -93,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_blue_dark"
                 android:fontFamily="casual"
+                android:onClick="goToSignUp"
                 android:text="@string/register"
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textColor="@android:color/background_dark"

@@ -6,12 +6,13 @@ package edu.eci.cosw.climapp.model;
 
 public class LoginWrapper {
     private final String username;
-
+    private final String email;
     private final String password;
 
-    public LoginWrapper( String username, String password )    {
+    public LoginWrapper( String username, String password, String email )    {
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
     public String getUsername(){
@@ -20,5 +21,9 @@ public class LoginWrapper {
 
     public String getPassword(){
         return password;
+    }
+
+    public String getEmail(){
+        return email;
     }
 }
