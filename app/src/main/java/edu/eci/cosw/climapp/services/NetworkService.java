@@ -17,4 +17,6 @@ public interface NetworkService {
 
     @POST( "user/login" )
     Call<Token> login(@Body LoginWrapper user);
+
+
 }
