@@ -25,11 +25,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.eci.cosw.climapp.R;
+import edu.eci.cosw.climapp.model.Coordinate;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private int MY_LOCATION_REQUEST_CODE = 1;
+    private Coordinate LatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,35 +54,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 builder1.setMessage("Creating a report...");
                 builder1.setCancelable(true);
                 LayoutInflater inflater = getLayoutInflater();
-                builder1.setView(inflater.inflate(R.layout.activity_dialog_report, null));
-                builder1.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Log.i("texto escrito por usuario", null);
-                    }
-                });
-                /*((Button) view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+                View v=inflater.inflate(R.layout.activity_dialog_report, null);
+                builder1.setView(v);
+                final AlertDialog alert11 = builder1.create();
+                v.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        finish();
+                        alert11.dismiss();
                     }
                 });
-                /*((Button) view.findViewById(R.id.cancel)).setOnClickListener(new View.OnClickListener() {
+                v.findViewById(R.id.acept).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        finish();
+                        //servicio web que no se me toca aprender
+                        //toca hacer algoritmo para mirar si pertenece a una zona pero primero extraer la zona
                     }
-                });*/
-
-                AlertDialog alert11 = builder1.create();
+                });
                 alert11.show();
 
             }
 
         });
     }
-
-
-
 
     /**
      * Manipulates the map once available.
