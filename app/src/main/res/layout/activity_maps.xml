@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="edu.eci.cosw.climapp.controller.MainActivity">
+    tools:context="edu.eci.cosw.climapp.controller.MapsActivity">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -14,16 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_addLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@android:color/holo_blue_dark"
-        app:fabSize="mini" />
 
 </LinearLayout>
 
