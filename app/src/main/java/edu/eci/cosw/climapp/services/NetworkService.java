@@ -15,6 +15,6 @@ import retrofit2.http.POST;
 
 public interface NetworkService {
 
-    @POST( "user/login" )
+    @POST( "users/login" )
     Call<Token> login(@Body LoginWrapper user);
 }

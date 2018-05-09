@@ -3,6 +3,8 @@ package edu.eci.cosw.climapp.controller;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +34,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import edu.eci.cosw.climapp.R;
+import edu.eci.cosw.climapp.model.LoginWrapper;
+import edu.eci.cosw.climapp.model.Token;
+import edu.eci.cosw.climapp.network.NetworkException;
+import edu.eci.cosw.climapp.network.RequestCallback;
+import edu.eci.cosw.climapp.network.RetrofitNetwork;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -49,6 +57,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private boolean valid = false;
+    private String token;
+    private boolean userValid = false;
+    public static final String TOKEN_NAME = "Token";
+    public static final String PREFS_NAME = "MyPrefsFile";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +94,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        token = settings.getString(TOKEN_NAME, "");
+        Log.i("Token es:",token);
+        if(!token.isEmpty()){
+            goToMain();
+        }
+
     }
 
     private void populateAutoComplete() {
@@ -152,10 +174,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+            valid = false;
+            userValid = false;
             focusView.requestFocus();
+            showProgress(false);
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            valid = false;
+            userValid = false;
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
@@ -278,13 +305,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-            return true;
+            return validUser(mEmail,mPassword );
         }
 
         @Override
@@ -293,7 +314,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                //finish();
+                saveToken();
+                goToMain();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -305,6 +327,53 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    public boolean validUser(String mEmail, String mPassword){
+        valid = false;
+        userValid = false;
+        RetrofitNetwork rf = new RetrofitNetwork();
+        LoginWrapper lw = new LoginWrapper(mEmail, mPassword, mEmail);
+        rf.login(lw, new RequestCallback<Token>() {
+            @Override
+            public void onSuccess(Token response) {
+                if(response!=null){
+                    token = response.getAccessToken();
+                    valid = true;
+                    userValid = true;
+                }
+                else{
+                    valid = true;
+                    userValid = false;
+                }
+
+            }
+            @Override
+            public void onFailed(NetworkException e) {
+                valid = true;
+                userValid = false;
+                e.printStackTrace();
+            }
+        });
+
+        while(!valid){
+            Log.i("Entro ", "a");
+        }
+
+        return userValid;
+    }
+
+    public void goToMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(TOKEN_NAME,token);
+        startActivity(intent);
+    }
+
+    public void saveToken(){
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(TOKEN_NAME, token);
+        editor.commit();
     }
 }
 
