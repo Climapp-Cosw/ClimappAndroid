@@ -73,6 +73,7 @@
             android:fontFamily="casual"
             android:hint="Email"
             android:inputType="textEmailAddress"
+            android:textColor="@android:color/background_light"
             android:textColorHint="@android:color/background_light" />
 
         <EditText
@@ -84,6 +85,7 @@
             android:fontFamily="casual"
             android:hint="Password"
             android:inputType="textPersonName|textPassword"
+            android:textColor="@android:color/background_light"
             android:textColorHint="@android:color/background_light" />
 
         <EditText
@@ -95,6 +97,7 @@
             android:fontFamily="casual"
             android:hint="Confirm Password"
             android:inputType="textPersonName|textPassword"
+            android:textColor="@android:color/background_light"
             android:textColorHint="@android:color/background_light" />
 
         <EditText
@@ -105,6 +108,7 @@
             android:ems="10"
             android:hint="Profile Picture Link"
             android:inputType="textPersonName"
+            android:textColor="@android:color/background_light"
             android:textColorHint="@android:color/background_light" />
 
         <Button
@@ -114,6 +118,7 @@
             android:layout_weight="1"
             android:background="@android:color/holo_blue_light"
             android:fontFamily="casual"
+            android:onClick="addNewUser"
             android:text="Register"
             android:textStyle="bold" />
 

@@ -26,15 +26,17 @@ public class User {
      * @param password
      * @param name
      * @param image
-     * @param confirmPassword
      * @param points
      */
-    public User( String email, String password, String name, String image, String confirmPassword,int points ) {
+    public User( String email, String password, String name, String image,int points ) {
         this.email = email;
         this.password = password;
         this.image = image;
         this.name = name;
-        this.confirmPassword = confirmPassword;
         this.points=points;
+    }
+
+    public String getName(){
+        return name;
     }
 }

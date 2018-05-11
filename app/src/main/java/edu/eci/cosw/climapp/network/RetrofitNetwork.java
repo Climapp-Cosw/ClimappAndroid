@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 
 import edu.eci.cosw.climapp.model.LoginWrapper;
 import edu.eci.cosw.climapp.model.Token;
+import edu.eci.cosw.climapp.model.User;
 import edu.eci.cosw.climapp.services.NetworkService;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -25,8 +26,8 @@ public class RetrofitNetwork
         implements Network
 {
 
-    //private static final String BASE_URL = "http://10.0.2.2:8080/";
-    private static final String BASE_URL = "http://192.168.0.15:8080/";
+    private static final String BASE_URL = "http://10.0.2.2:8080/";
+    //private static final String BASE_URL = "http://192.168.0.15:8080/";
     private NetworkService networkService;
 
     private ExecutorService backgroundExecutor = Executors.newFixedThreadPool( 1 );
@@ -55,6 +56,22 @@ public class RetrofitNetwork
 
     }
 
+    @Override
+    public void signUp(final User user, final RequestCallback<User> requestCallback) {
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<User> call = networkService.signUp(user);
+                try                {
+                    Response<User> execute = call.execute();
+                    requestCallback.onSuccess( execute.body() );
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+    }
 
 
     public void addSecureTokenInterceptor( final String token )    {

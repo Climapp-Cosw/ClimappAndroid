@@ -99,7 +99,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         token = settings.getString(TOKEN_NAME, "");
-        Log.i("Token es:",token);
         if(!token.isEmpty()){
             goToMain();
         }
