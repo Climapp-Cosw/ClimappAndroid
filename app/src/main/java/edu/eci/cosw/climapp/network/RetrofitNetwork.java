@@ -1,13 +1,16 @@
 package edu.eci.cosw.climapp.network;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.eci.cosw.climapp.model.LoginWrapper;
+import edu.eci.cosw.climapp.model.Report;
 import edu.eci.cosw.climapp.model.Token;
 import edu.eci.cosw.climapp.model.User;
+import edu.eci.cosw.climapp.model.Zone;
 import edu.eci.cosw.climapp.services.NetworkService;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -22,10 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by JuanArevaloMerchan on 18/04/2018.
  */
 
-public class RetrofitNetwork
-        implements Network
-{
-
+public class RetrofitNetwork implements Network {
     private static final String BASE_URL = "http://10.0.2.2:8080/";
     //private static final String BASE_URL = "http://192.168.0.15:8080/";
     private NetworkService networkService;
@@ -71,6 +71,60 @@ public class RetrofitNetwork
                 }
             }
         } );
+    }
+
+    @Override
+    public void createReport(final  Report report,final RequestCallback<Report> requestCallback) {
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<Report> call = networkService.createReport(report);
+                try                {
+                    Response<Report> execute= call.execute();
+                    requestCallback.onSuccess( execute.body() );
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+    }
+    /*
+    @Override
+    public List<Report> getReports(RequestCallback<Report> requestCallback) {
+        List<Report> res=new ArrayList<>();
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<Report> call = networkService.getReports();
+                try                {
+                    Response<Report> execute= call.execute();
+                    requestCallback.onSuccess( execute.body() );
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+        return res;
+    }*/
+    @Override
+    public List<Zone> getZones(final RequestCallback<Zone> requestCallback) {
+        List<Zone> res=new ArrayList<>();
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<Zone> call = networkService.getZones();
+                try                {
+                    Response<Zone> execute= call.execute();
+                    requestCallback.onSuccess(execute.body());
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+        return res;
     }
 
 

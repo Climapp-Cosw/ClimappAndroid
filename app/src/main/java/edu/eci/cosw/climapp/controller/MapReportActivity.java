@@ -3,17 +3,17 @@ package edu.eci.cosw.climapp.controller;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import  edu.eci.cosw.climapp.R;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,10 +24,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.zip.Inflater;
-
-import edu.eci.cosw.climapp.R;
 import edu.eci.cosw.climapp.model.Coordinate;
 
 public class MapReportActivity extends AppCompatActivity  implements OnMapReadyCallback {
@@ -35,6 +31,7 @@ public class MapReportActivity extends AppCompatActivity  implements OnMapReadyC
     private static final int LOCATION_REQUEST_CODE = 1;
     private Coordinate LatLng;
     private Toolbar toolbar;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +44,7 @@ public class MapReportActivity extends AppCompatActivity  implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
 
-        // Set a Toolbar to replace the ActionBar.
+
         //toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -58,31 +55,18 @@ public class MapReportActivity extends AppCompatActivity  implements OnMapReadyC
             }
         });
     }
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main2, menu);
 
         return true;
-    }
+    }*/
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.option1:
-                Toast.makeText(MapReportActivity.this, "Option 1", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.option2:
-                Toast.makeText(MapReportActivity.this, "Option 2", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.option3:
-                Toast.makeText(MapReportActivity.this, "Option 3", Toast.LENGTH_LONG).show();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    /**
+
+
+  /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,

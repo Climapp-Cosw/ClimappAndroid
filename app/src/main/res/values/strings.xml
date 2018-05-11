@@ -32,5 +32,9 @@
     <string name="sunny">Sunny</string>
     <string name="windy">Windy</string>
     <string name="register">Sign - Up</string>
+    <string name="user">User</string>
+    <string name="email">Email</string>
+    <string name="todo">TODO</string>
+    <string name="numpoints">numPoints</string>
 
 </resources>
