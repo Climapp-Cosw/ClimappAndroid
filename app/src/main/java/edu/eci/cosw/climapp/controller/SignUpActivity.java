@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,7 +15,6 @@ import edu.eci.cosw.climapp.model.User;
 import edu.eci.cosw.climapp.network.NetworkException;
 import edu.eci.cosw.climapp.network.RequestCallback;
 import edu.eci.cosw.climapp.network.RetrofitNetwork;
-import okhttp3.ResponseBody;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -116,7 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     public void goToMain(String token) {
-        Intent intent = new Intent(this, MapReportActivity.class);
+        Intent intent = new Intent(this, MainMapReport.class);
         intent.putExtra(LoginActivity.TOKEN_NAME,token);
         startActivity(intent);
     }

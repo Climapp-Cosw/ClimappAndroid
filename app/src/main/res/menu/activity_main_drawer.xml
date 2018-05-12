@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="My account" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:title="My favorites zones" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Slideshow" />
+
+    </group>
+
+     <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_send"
+                android:title="About Climapp" />
+            <item
+                android:id="@+id/nav_manage"
+                android:title="Close session" />
+        </menu>
+    </item>
+
+
+</menu>
