@@ -72,7 +72,6 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragments, new fragmentMap());
         ft.commit();
-
     }
     @Override
     public void onBackPressed() {
@@ -116,13 +115,11 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             // Handle the camera action
         } else if (id == R.id.nav_close) {
             Intent intent = new Intent(this, LoginActivity.class);
-            /*Cerrara sesion d eusuario y reanudar la tarea login*/
             SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
             String token = settings.getString(LoginActivity.TOKEN_NAME, "");
             if(!token.isEmpty()){
                 startActivity(intent);
             }
-
         }else if (id == R.id.nav_zones) {
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragments, new fragmentFavoriteZones());
@@ -182,7 +179,7 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
                 Toast.makeText(this, "Error de permisos", Toast.LENGTH_LONG).show();
             }
         }
-    }*/
+    }
 
     private void selectWeather(View view){
         final AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
@@ -206,6 +203,6 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             }
         });
         alert11.show();
-    }
+    }*/
 
 }
