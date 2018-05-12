@@ -1,6 +1,8 @@
 package edu.eci.cosw.climapp.controller;
 
 import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import  edu.eci.cosw.climapp.R;
@@ -39,6 +41,7 @@ public class MainMapReport extends AppCompatActivity  implements OnMapReadyCallb
     private Toolbar toolbar;
     private DrawerLayout mDrawerLayout;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,7 @@ public class MainMapReport extends AppCompatActivity  implements OnMapReadyCallb
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
     }
     @Override
     public void onBackPressed() {
@@ -107,14 +110,31 @@ public class MainMapReport extends AppCompatActivity  implements OnMapReadyCallb
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_about) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_close) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+            String token = settings.getString(LoginActivity.TOKEN_NAME, "");
+            if(!token.isEmpty()){
+                startActivity(intent);
+            }
 
-        }else if (id == R.id.nav_manage) {
+        }else if (id == R.id.nav_zones) {
+            Intent intent = new Intent(this, FavoriteZones.class);
+            SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+            String token = settings.getString(LoginActivity.TOKEN_NAME, "");
+            if(!token.isEmpty()){
+                startActivity(intent);
+            }
 
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_edit_profile) {
+            Intent intent = new Intent(this, EditProfile.class);
+            SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+            String token = settings.getString(LoginActivity.TOKEN_NAME, "");
+            if(!token.isEmpty()){
+                startActivity(intent);
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

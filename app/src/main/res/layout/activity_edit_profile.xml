@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.eci.cosw.climapp.controller.DetailProfile"
+    tools:context="edu.eci.cosw.climapp.controller.EditProfile"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -24,7 +24,8 @@
             android:src="@drawable/ic_menu_camera"
             tools:src="@mipmap/ic_launcher_round" />
 
-        <TextView
+        <EditText
+            android:id="@+id/newnameuser"
             android:layout_width="215dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageView7"
@@ -58,8 +59,8 @@
                 android:contentDescription="@string/todo"
                 android:src="@drawable/common_google_signin_btn_icon_dark_normal_background" />
 
-            <TextView
-                android:id="@+id/textView2"
+            <EditText
+                android:id="@+id/newemail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -79,15 +80,16 @@
                 android:contentDescription="@string/todo"
                 android:src="@drawable/common_google_signin_btn_icon_dark_normal_background" />
 
-            <TextView
-                android:id="@+id/textView4"
+            <EditText
+                android:id="@+id/newpassword"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
 
+                android:inputType="textWebPassword"
                 android:paddingStart="20dp"
-                android:text="@string/numpoints"
+                android:text="@string/prompt_password"
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textStyle="bold" />
         </TableRow>
@@ -103,41 +105,19 @@
                 android:contentDescription="@string/numpoints"
                 android:src="@drawable/common_google_signin_btn_icon_dark_normal_background" />
 
-            <TextView
-                android:id="@+id/textView5"
+            <EditText
+                android:id="@+id/newconfirmpassword"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:inputType="textWebPassword"
                 android:paddingStart="20dp"
-                android:text="@string/numpoints"
+                android:text="@string/prompt_password"
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textStyle="bold" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/imageView6"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/common_google_signin_btn_icon_dark_normal_background" />
-
-            <TextView
-                android:id="@+id/textView6"
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:paddingStart="20dp"
-                android:text="@string/numpoints"
-                android:textAppearance="@style/TextAppearance.AppCompat"
-                android:textStyle="bold" />
-        </TableRow>
     </TableLayout>
 
 </LinearLayout>
