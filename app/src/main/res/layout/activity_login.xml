@@ -67,8 +67,10 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="@android:color/background_light"
+                    android:textColorHint="@android:color/white"
                     android:textColorLink="@android:color/holo_blue_light"
                     android:textStyle="bold" />
+
 
             </android.support.design.widget.TextInputLayout>
 
@@ -107,7 +109,7 @@
     <ImageView
         android:layout_width="314dp"
         android:layout_height="215dp"
-        android:contentDescription=""
+        android:contentDescription="@string/todo"
         android:src="@drawable/logo" />
 
 </LinearLayout>

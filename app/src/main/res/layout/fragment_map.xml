@@ -5,8 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/mapreport"
-    tools:context="edu.eci.cosw.climapp.controller.MainMapReport">
+    tools:context="edu.eci.cosw.climapp.controller.fragmentMap">
 
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="?android:attr/actionModePasteDrawable" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,11 +32,4 @@
             tools:layout_editor_absoluteY="7dp" />
     </LinearLayout>
 
-
 </android.support.design.widget.CoordinatorLayout>
-
-
-
-
-
-
