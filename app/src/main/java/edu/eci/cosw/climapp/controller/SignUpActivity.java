@@ -1,7 +1,9 @@
 package edu.eci.cosw.climapp.controller;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +21,7 @@ import edu.eci.cosw.climapp.network.RetrofitNetwork;
 public class SignUpActivity extends AppCompatActivity {
 
     EditText txt_name, txt_email, txt_password, txt_confirmPassword, txt_picture;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void addNewUser(View view){
         if(validForm()){
-            User user = new User(txt_email.getText().toString(), txt_password.getText().toString(), txt_name.getText().toString(), txt_picture.getText().toString(), 0);
+            user = new User(txt_email.getText().toString(), txt_password.getText().toString(), txt_name.getText().toString(), txt_picture.getText().toString(), 0);
             RetrofitNetwork rfN = new RetrofitNetwork();
             rfN.signUp(user, new RequestCallback<User>() {
                 @Override
@@ -80,6 +83,7 @@ public class SignUpActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(LoginActivity.TOKEN_NAME, token);
+        editor.putString("userEmail", txt_email.getText().toString().trim());
         editor.commit();
     }
 
@@ -112,10 +116,24 @@ public class SignUpActivity extends AppCompatActivity {
             return true;
         }
     }
-
+    private void insertUserBD(){
+        bdSQLite usdbh = new bdSQLite(this, 1);
+        SQLiteDatabase db = usdbh.getWritableDatabase();
+        usdbh.onUpgrade(db,1, 1);
+        db.execSQL("INSERT INTO users (id, name,email,password,points) " + "VALUES ("
+                + "1, '"
+                + user.getName() +"', '"
+                + user.getEmail()+"', '"
+                + user.getPassword()+"',"
+                + user.getPoints()
+                + ")");
+        db.close();
+    }
     public void goToMain(String token) {
+        insertUserBD();
         Intent intent = new Intent(this, MainMapReport.class);
         intent.putExtra(LoginActivity.TOKEN_NAME,token);
         startActivity(intent);
+        finish();
     }
 }

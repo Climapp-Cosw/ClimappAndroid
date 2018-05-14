@@ -40,6 +40,7 @@ public class RetrofitNetwork implements Network {
 
     @Override
     public void login(final LoginWrapper loginWrapper, final RequestCallback<Token> requestCallback )    {
+        //addSecureTokenInterceptor(token);
         backgroundExecutor.execute( new Runnable()        {
             @Override
             public void run()            {
@@ -58,6 +59,7 @@ public class RetrofitNetwork implements Network {
 
     @Override
     public void signUp(final User user, final RequestCallback<User> requestCallback) {
+        //addSecureTokenInterceptor(token);
         backgroundExecutor.execute( new Runnable()        {
             @Override
             public void run()            {
@@ -74,13 +76,14 @@ public class RetrofitNetwork implements Network {
     }
 
     @Override
-    public void createReport(final  Report report,final RequestCallback<Report> requestCallback) {
+    public void userByEmail(final String s, final RequestCallback<User> requestCallback) {
+        //addSecureTokenInterceptor(token);
         backgroundExecutor.execute( new Runnable()        {
             @Override
             public void run()            {
-                Call<Report> call = networkService.createReport(report);
+                Call<User> call = networkService.userByEmail(s);
                 try                {
-                    Response<Report> execute= call.execute();
+                    Response<User> execute= call.execute();
                     requestCallback.onSuccess( execute.body() );
                 }
                 catch ( IOException e )                {
@@ -89,16 +92,16 @@ public class RetrofitNetwork implements Network {
             }
         } );
     }
-    /*
+
     @Override
-    public List<Report> getReports(RequestCallback<Report> requestCallback) {
-        List<Report> res=new ArrayList<>();
+    public void createReport(final  Report report,final RequestCallback<ResponseBody> requestCallback) {
+        //addSecureTokenInterceptor(token);
         backgroundExecutor.execute( new Runnable()        {
             @Override
             public void run()            {
-                Call<Report> call = networkService.getReports();
+                Call<ResponseBody> call = networkService.createReport(report);
                 try                {
-                    Response<Report> execute= call.execute();
+                    Response<ResponseBody> execute= call.execute();
                     requestCallback.onSuccess( execute.body() );
                 }
                 catch ( IOException e )                {
@@ -106,17 +109,34 @@ public class RetrofitNetwork implements Network {
                 }
             }
         } );
-        return res;
-    }*/
+    }
+
     @Override
-    public List<Zone> getZones(final RequestCallback<Zone> requestCallback) {
-        List<Zone> res=new ArrayList<>();
+    public void getReports(final RequestCallback<List<Report>> requestCallback) {
         backgroundExecutor.execute( new Runnable()        {
             @Override
             public void run()            {
-                Call<Zone> call = networkService.getZones();
+                Call<List<Report>> call = networkService.getReports();
                 try                {
-                    Response<Zone> execute= call.execute();
+                    Response<List<Report>> execute= call.execute();
+                    requestCallback.onSuccess( execute.body() );
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+    }
+
+    @Override
+    public void getZones(final RequestCallback<List<Zone>> requestCallback) {
+        //addSecureTokenInterceptor(token);
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<List<Zone>> call = networkService.getZones();
+                try                {
+                    Response<List<Zone>> execute= call.execute();
                     requestCallback.onSuccess(execute.body());
                 }
                 catch ( IOException e )                {
@@ -124,9 +144,7 @@ public class RetrofitNetwork implements Network {
                 }
             }
         } );
-        return res;
     }
-
 
     public void addSecureTokenInterceptor( final String token )    {
 

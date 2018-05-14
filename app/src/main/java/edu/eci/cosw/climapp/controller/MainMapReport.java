@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import  edu.eci.cosw.climapp.R;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +22,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,7 +34,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.w3c.dom.Text;
+
 import edu.eci.cosw.climapp.model.Coordinate;
+import edu.eci.cosw.climapp.model.User;
+import edu.eci.cosw.climapp.network.NetworkException;
+import edu.eci.cosw.climapp.network.RequestCallback;
+import edu.eci.cosw.climapp.network.RetrofitNetwork;
+
+import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 public class MainMapReport extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
     private GoogleMap mMap;
@@ -37,28 +51,17 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
     private Coordinate LatLng;
     private Toolbar toolbar;
     private DrawerLayout mDrawerLayout;
+    public TextView txtname, txtemail, txtpoint;
+    public ImageView imguser;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
-/*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectWeather(view);
-            }
-        });*/
+        //menu
         //
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -66,12 +69,37 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        ConfigInitialUser();
+        //----------------------------------------------------------------------------------
+        //inicio fragmento mapa1
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragments, new fragmentMap());
         ft.commit();
+    }
+    public void ConfigInitialUser(){
+        //
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        //con esto generamos el usuario en el header del menu-------------------------------
+        View hView = navigationView.getHeaderView(0);
+        txtname = (TextView) hView.findViewById(R.id.textuser);
+        txtemail = (TextView) hView.findViewById(R.id.textemail);
+        txtpoint = (TextView) hView.findViewById(R.id.textpoints);
+        imguser =(ImageView) hView.findViewById(R.id.imageViewuser);
+        SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        bdSQLite usdbh = new bdSQLite(this, 1);
+        SQLiteDatabase db = usdbh.getReadableDatabase();
+        Cursor c = db.rawQuery(" SELECT * FROM users WHERE email='"+settings.getString("userEmail","")+"' ", null);
+        if (c.moveToFirst()) {
+            //Recorremos el cursor hasta que no haya más registros
+            do {
+                txtname.setText(c.getString(1));
+                txtemail.setText(c.getString(2));
+                txtpoint.setText(String.valueOf(c.getInt(4)));
+            } while(c.moveToNext());
+        }
+        db.close();
+        navigationView.setNavigationItemSelectedListener(this);
     }
     @Override
     public void onBackPressed() {
@@ -101,6 +129,7 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
         if (id == R.id.home) {
             Intent intent = new Intent(this, MainMapReport.class);
             startActivity(intent);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -114,12 +143,14 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
         if (id == R.id.nav_about) {
             // Handle the camera action
         } else if (id == R.id.nav_close) {
-            Intent intent = new Intent(this, LoginActivity.class);
             SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
-            String token = settings.getString(LoginActivity.TOKEN_NAME, "");
-            if(!token.isEmpty()){
-                startActivity(intent);
-            }
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString(LoginActivity.TOKEN_NAME, "");
+            editor.commit();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+
         }else if (id == R.id.nav_zones) {
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragments, new fragmentFavoriteZones());
@@ -129,80 +160,8 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             ft.replace(R.id.fragments, new fragmentEditProfile());
             ft.commit();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-  /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     *//*
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        LatLng cali = new LatLng(3.4383, -76.5161);
-        googleMap.addMarker(new MarkerOptions().position(cali).title("Cali la Sucursal del cielo"));
-        CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(10).build();
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Mostrar diálogo explicativo
-            } else {
-                // Solicitar permiso
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        LOCATION_REQUEST_CODE);
-            }
-        }
-    }*/
-    /*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (permissions.length == 1 &&
-                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-                Toast.makeText(this, "Error de permisos", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private void selectWeather(View view){
-        final AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
-        builder1.setMessage("Creating a report...");
-        builder1.setCancelable(true);
-        LayoutInflater inflater = getLayoutInflater();
-        View v=inflater.inflate(R.layout.activity_dialog_report, null);
-        builder1.setView(v);
-        final AlertDialog alert11 = builder1.create();
-        v.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alert11.dismiss();
-            }
-        });
-        v.findViewById(R.id.acept).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //servicio web que no se me toca aprender
-                //toca hacer algoritmo para mirar si pertenece a una zona pero primero extraer la zona
-            }
-        });
-        alert11.show();
-    }*/
-
 }

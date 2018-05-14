@@ -7,171 +7,174 @@
     android:background="@drawable/background"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/common_google_signin_btn_text_dark_disabled"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:subtitleTextColor="@android:color/background_light"
+        app:title="Create a report..."
+        app:titleTextColor="@android:color/background_light" />
+
     <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="142dp">
+        android:layout_height="146dp"
+        tools:backgroundTint="@color/colorAccent">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TableLayout
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="142dp">
+                android:layout_height="86dp">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/rainImg"
+                    android:layout_width="136dp"
+                    android:layout_height="86dp"
+                    android:contentDescription="@string/rain"
+                    android:src="@android:drawable/btn_star" />
 
-                    <ImageView
-                        android:id="@+id/rainImg"
-                        android:layout_width="98dp"
-                        android:layout_height="86dp"
-                        android:contentDescription="@string/rain"
-                        android:src="@android:drawable/btn_star" />
+                <ImageView
+                    android:id="@+id/hailstoneImg"
+                    android:layout_width="128dp"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/hailstone"
+                    android:src="@android:drawable/btn_star" />
 
-                    <ImageView
-                        android:id="@+id/hailstoneImg"
-                        android:layout_width="99dp"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/hailstone"
-                        android:src="@android:drawable/btn_star" />
+                <ImageView
+                    android:id="@+id/thunderstormImg"
+                    android:layout_width="101dp"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/thunderstorm"
+                    android:src="@android:drawable/btn_star" />
 
-                    <ImageView
-                        android:id="@+id/thunderstormImg"
-                        android:layout_width="101dp"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/thunderstorm"
-                        android:src="@android:drawable/btn_star" />
+            </TableRow>
 
-                </TableRow>
+            <RadioGroup
+                android:id="@+id/groupradio"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:orientation="horizontal">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <RadioButton
+                    android:id="@+id/tunderstorm"
+                    android:layout_width="136dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/thunderstorm"
+                    android:textColor="@android:color/background_light"
+                    tools:text="Thunderstorm" />
 
-                    <RadioButton
-                        android:id="@+id/tunderstorm"
-                        android:layout_width="136dp"
-                        android:layout_height="match_parent"
-                        android:text="@string/thunderstorm"
-                        android:textColor="@android:color/background_light"
-                        tools:text="Thunderstorm" />
+                <RadioButton
+                    android:id="@+id/hailstone"
+                    android:layout_width="131dp"
+                    android:layout_height="55dp"
+                    android:checked="false"
+                    android:contextClickable="false"
+                    android:text="@string/hailstone"
+                    android:textColor="@android:color/background_light"
+                    tools:text="Hailstone" />
 
-                    <RadioButton
-                        android:id="@+id/hailstone"
-                        android:layout_width="131dp"
-                        android:layout_height="55dp"
-                        android:text="@string/hailstone"
-                        android:textColor="@android:color/background_light"
-                        tools:text="Hailstone" />
+                <RadioButton
+                    android:id="@+id/rain"
+                    android:layout_width="130dp"
+                    android:layout_height="55dp"
+                    android:text="@string/rain"
+                    android:textColor="@android:color/background_light" />
+            </RadioGroup>
 
-                    <RadioButton
-                        android:id="@+id/rain"
-                        android:layout_width="130dp"
-                        android:layout_height="55dp"
-                        android:textColor="@android:color/background_light"
-                        android:text="@string/rain" />
-
-                </TableRow>
-
-            </TableLayout>
         </LinearLayout>
     </HorizontalScrollView>
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="253dp">
-
-        <LinearLayout
+        android:layout_width="match_parent"        android:layout_height="269dp">
+       <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TableLayout
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/cloudyImg"
+                    android:layout_width="137dp"
+                    android:layout_height="93dp"
+                    android:contentDescription="@string/cloudy"
+                    android:src="@android:drawable/btn_star" />
 
-                    <ImageView
-                        android:id="@+id/cloudyImg"
-                        android:layout_width="135dp"
-                        android:layout_height="56dp"
-                        android:contentDescription="@string/cloudy"
-                        android:src="@android:drawable/btn_star" />
+                <CheckBox
+                    android:id="@+id/cloudy"
+                    android:layout_width="132dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/cloudy"
+                    android:textColor="@android:color/background_light" />
 
-                    <CheckBox
-                        android:id="@+id/cloudy"
-                        android:layout_width="132dp"
-                        android:layout_height="match_parent"
-                        android:text="@string/cloudy" />
+            </TableRow>
 
-                </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <TableRow
+                <ImageView
+                    android:id="@+id/sunnyImg"
+                    android:layout_width="137dp"
+                    android:layout_height="91dp"
+                    android:contentDescription="@string/sunny"
+                    android:src="@android:drawable/btn_star" />
+
+                <CheckBox
+                    android:id="@+id/sunny"
+                    android:layout_width="130dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/sunny"
+                    android:textColor="@android:color/background_light" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/icyImg"
+                    android:layout_width="135dp"
+                    android:layout_height="95dp"
+                    android:contentDescription="@string/icy"
+                    android:src="@android:drawable/btn_star" />
+
+                <CheckBox
+                    android:id="@+id/icy"
+                    android:layout_width="132dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/icy"
+                    android:textColor="@android:color/background_light" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/windyImg"
+                    android:layout_width="132dp"
+                    android:layout_height="97dp"
+                    android:contentDescription="@string/windy"
+                    android:src="@android:drawable/btn_star"
+                    android:textColor="@android:color/background_light" />
+
+                <CheckBox
+                    android:id="@+id/windy"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/sunnyImg"
-                        android:layout_width="127dp"
-                        android:layout_height="60dp"
-                        android:contentDescription="@string/sunny"
-                        android:src="@android:drawable/btn_star" />
-
-                    <CheckBox
-                        android:id="@+id/sunny"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/sunny" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/icyImg"
-                        android:layout_width="115dp"
-                        android:layout_height="62dp"
-                        android:contentDescription="@string/icy"
-                        android:src="@android:drawable/btn_star" />
-
-                    <CheckBox
-                        android:id="@+id/icy"
-                        android:layout_width="78dp"
-                        android:layout_height="match_parent"
-                        android:textColor="@android:color/background_light"
-                        android:text="@string/icy" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="153dp">
-
-                    <ImageView
-                        android:id="@+id/windyImg"
-                        android:layout_width="127dp"
-                        android:layout_height="60dp"
-                        android:contentDescription="@string/windy"
-                        android:textColor="@android:color/background_light"
-                        android:src="@android:drawable/btn_star" />
-
-                    <CheckBox
-                        android:id="@+id/windy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:textColor="@android:color/background_light"
-                        android:text="@string/windy" />
-                </TableRow>
-
-            </TableLayout>
-        </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:text="@string/windy"
+                    android:textColor="@android:color/background_light" />
+            </TableRow>        </LinearLayout>
     </ScrollView>
 
     <LinearLayout
@@ -189,7 +192,7 @@
             android:fontFamily="casual"
             android:text="@string/ok"
             android:textAppearance="@style/TextAppearance.AppCompat"
-            android:textColor="@android:color/background_light"
+            android:textColor="@android:color/background_dark"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="377dp" />
 
@@ -207,7 +210,7 @@
             android:fontFamily="casual"
             android:text="@string/cancel"
             android:textAppearance="@style/TextAppearance.AppCompat"
-            android:textColor="@android:color/background_light"
+            android:textColor="@android:color/background_dark"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="388dp" />
 

@@ -8,6 +8,7 @@ import edu.eci.cosw.climapp.model.Report;
 import edu.eci.cosw.climapp.model.Token;
 import edu.eci.cosw.climapp.model.User;
 import edu.eci.cosw.climapp.model.Zone;
+import okhttp3.ResponseBody;
 
 /**
  * Created by JuanArevaloMerchan on 18/04/2018.
@@ -18,9 +19,11 @@ public interface Network {
 
     void signUp(User user, RequestCallback<User> requestCallback);
 
-    void createReport(Report report,RequestCallback<Report> requestCallback);
+    void userByEmail(String s, RequestCallback<User> requestCallback);
 
-    //List<Report> getReports(RequestCallback<Report> requestCallback);
+    void createReport(Report report,RequestCallback<ResponseBody> requestCallback);
 
-    List<Zone> getZones(RequestCallback<Zone> requestCallback);
+    void getReports(RequestCallback<List<Report>> requestCallback);
+
+    void getZones(RequestCallback<List<Zone>> requestCallback);
 }

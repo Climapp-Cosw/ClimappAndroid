@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -30,12 +31,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import edu.eci.cosw.climapp.R;
 import edu.eci.cosw.climapp.model.LoginWrapper;
 import edu.eci.cosw.climapp.model.Token;
+import edu.eci.cosw.climapp.model.User;
 import edu.eci.cosw.climapp.network.NetworkException;
 import edu.eci.cosw.climapp.network.RequestCallback;
 import edu.eci.cosw.climapp.network.RetrofitNetwork;
@@ -64,7 +67,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public static final String PREFS_NAME = "MyPrefsFile";
     public static final String NAME_NAME = "name";
     public static final String PASSWORD_NAME = "Password";
-
+    private User user;
+    private String insert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -330,10 +334,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    public boolean validUser(String mEmail, String mPassword){
+    public boolean validUser(final String mEmail, String mPassword){
         valid = false;
         userValid = false;
-        RetrofitNetwork rf = new RetrofitNetwork();
+        final RetrofitNetwork rf = new RetrofitNetwork();
         LoginWrapper lw = new LoginWrapper(mEmail, mPassword, mEmail);
         rf.login(lw, new RequestCallback<Token>() {
             @Override
@@ -347,6 +351,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     valid = true;
                     userValid = false;
                 }
+                rf.userByEmail(mEmail, new RequestCallback<User>() {
+                    @Override
+                    public void onSuccess(User response) {
+                        insertUserBD("INSERT INTO users (id, name,email,password,points) " + "VALUES ("
+                                + response.getId() + ", '"
+                                + response.getName() +"', '"
+                                + response.getEmail()+"', '"
+                                + response.getPassword()+"',"
+                                + response.getPoints()
+                                + ")");
+                    }
+                    @Override
+                    public void onFailed(NetworkException e) {
+                        Toast.makeText(getApplicationContext(), "Invalid User.",Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
             @Override
@@ -363,11 +383,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         return userValid;
     }
-
+    private void insertUserBD(String intt){
+        bdSQLite usdbh = new bdSQLite(this, 1);
+        SQLiteDatabase db = usdbh.getWritableDatabase();
+        usdbh.onUpgrade(db,1, 1);
+        db.execSQL(intt);
+        db.close();
+    }
     public void goToMain() {
         Intent intent = new Intent(this, MainMapReport.class);
-        intent.putExtra(TOKEN_NAME,token);
         startActivity(intent);
+        finish();
     }
 
     public void goToSignUp(View view) {
@@ -376,12 +402,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         intent.putExtra(NAME_NAME, mEmailView.getText().toString());
         intent.putExtra(PASSWORD_NAME, mPasswordView.getText().toString());
         startActivity(intent);
+
     }
 
     public void saveToken(){
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(TOKEN_NAME, token);
+        editor.putString("userEmail", mEmailView.getText().toString().trim());
         editor.commit();
     }
 }

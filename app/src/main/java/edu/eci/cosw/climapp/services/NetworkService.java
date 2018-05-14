@@ -1,14 +1,19 @@
 package edu.eci.cosw.climapp.services;
 
+import java.util.List;
+
+import edu.eci.cosw.climapp.R;
 import edu.eci.cosw.climapp.model.LoginWrapper;
 import edu.eci.cosw.climapp.model.Report;
 import edu.eci.cosw.climapp.model.Token;
 import edu.eci.cosw.climapp.model.User;
 import edu.eci.cosw.climapp.model.Zone;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 
 /**
@@ -23,12 +28,15 @@ public interface NetworkService {
     @POST( "users/" )
     Call<User> signUp(@Body User user);
 
+    @GET( "users/{email}" )
+    Call<User> userByEmail(@Path("email")String email);
+
     @POST( "reports/newReport" )
-    Call<Report> createReport(@Body Report report);
-    /*
+    Call<ResponseBody> createReport(@Body Report report);
+
     @GET( "reports/" )
-    Call<Report> getReports();*/
+    Call<List<Report>> getReports();
 
     @GET( "zones/" )
-    Call<Zone> getZones();
+    Call<List<Zone>> getZones();
 }

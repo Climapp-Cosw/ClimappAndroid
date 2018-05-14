@@ -8,7 +8,23 @@
     android:orientation="vertical">
 
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
 
+    <ListView
+        android:id="@+id/zones"
+        android:layout_width="match_parent"
+        android:layout_height="308dp" >
 
+    </ListView>
 
+    <ListView
+        android:id="@+id/zonesFav"
+        android:layout_width="match_parent"
+        android:layout_height="257dp" />
 </LinearLayout>

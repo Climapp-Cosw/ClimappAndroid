@@ -15,9 +15,9 @@ public class Report {
     private double longitude;
     private int dislike;
     private int like;
+    private int rain;
     /**
      *
-     * @param dateTimeReport
      * @param lat
      * @param lon
      * @param clima
@@ -26,8 +26,8 @@ public class Report {
      * @param dislike
      * @param like
      */
-    public Report(Date dateTimeReport, double lat, double lon, int clima, User u, Zone z,int dislike,int like) {
-        this.dateTimeReport = dateTimeReport;
+    public Report(double lat, double lon, int clima, User u, Zone z,int dislike,int like,int rain) {
+        this.dateTimeReport =  null;
         this.weather = clima;
         this.reportedUser = u;
         this.zone = z;
@@ -35,10 +35,12 @@ public class Report {
         this.latitude = lat;
         this.dislike = dislike;
         this.like = like;
+        this.rain=rain;
     }
 
     public Report() {
     }
+
     public Date getDateTimeReport() {
         return dateTimeReport;
     }
@@ -101,5 +103,13 @@ public class Report {
 
     public void setLike(int like) {
         this.like = like;
+    }
+
+    public int getRain() {
+        return rain;
+    }
+
+    public void setRain(int rain) {
+        this.rain = rain;
     }
 }
