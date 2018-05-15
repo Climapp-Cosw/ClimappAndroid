@@ -2,6 +2,7 @@ package edu.eci.cosw.climapp.controller;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,6 +16,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -55,6 +58,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
     private Coordinate coordinate;
     private View view;
     private int rain;
+    private int weather;
 
 
 
@@ -76,11 +80,10 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
     }
 
     private void selectWeather(View view){
-        LayoutInflater li = LayoutInflater.from(view.getContext());
         final AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
         builder1.setCancelable(true);
         LayoutInflater inflater = getLayoutInflater();
-        View v=inflater.inflate(R.layout.activity_dialog_report, null);
+        final View v=inflater.inflate(R.layout.activity_dialog_report, null);
         builder1.setView(v);
         final AlertDialog alert11 = builder1.create();
         v.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
@@ -92,9 +95,24 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         v.findViewById(R.id.acept).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewReport(alert11);
+                String s=checkboxButtons(v);
+                if(s!=""){
+                    addNewReport(alert11,v);
+
+                }else{
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("Please select a weather");
+                    final AlertDialog alert =builder.create();
+                    alert.show();
+                    // Create the AlertDialog object and return it
+                }
+
             }
         });
+        radioButtons(v);
+        alert11.show();
+    }
+    private void radioButtons(View v){
         RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.groupradio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
@@ -109,21 +127,41 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
-        alert11.show();
+
+    }
+    private String checkboxButtons(View v){
+        String s="";
+        if (((CheckBox)v.findViewById(R.id.windy)).isChecked()) {s+="w";}
+        if (((CheckBox)v.findViewById(R.id.sunny)).isChecked()) {s+="s";}
+        if (((CheckBox)v.findViewById(R.id.cloudy)).isChecked()) {s+="c";}
+        if (((CheckBox)v.findViewById(R.id.icy)).isChecked()) {s+="i";}
+        return s;
     }
 
-    private void addNewReport(final AlertDialog alert){
+    private void addNewReport(final AlertDialog alert,final View v){
+        ((ProgressBar)v.findViewById(R.id.progressBar4)).setVisibility(view.VISIBLE);
         SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         if(settings.getString("userEmail","")!=""){
             final RetrofitNetwork rfN = new RetrofitNetwork();
             rfN.userByEmail(settings.getString("userEmail",""), new RequestCallback<User>() {
                 @Override
                 public void onSuccess(User response) {
-                    Report report= new Report(4.6373,-74.09999,0,response,new Zone(),0,0,rain);
+                    Report report= new Report(4.6373,-74.09999,weather,response,new Zone(),0,0,rain);
                     rfN.createReport(report, new RequestCallback<ResponseBody>() {
                         @Override
                         public void onSuccess(ResponseBody responseBody) {
                             alert.dismiss();
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    final AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                                    builder2.setMessage("Report created");
+                                    final AlertDialog alert2 =builder2.create();
+                                    alert2.show();
+                                    ((ProgressBar)v.findViewById(R.id.progressBar4)).setVisibility(view.GONE);
+
+                                }
+                            });
+
                         }
                         @Override
                         public void onFailed(NetworkException e) {
@@ -138,9 +176,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
             });
         }
     }
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == LOCATION_REQUEST_CODE) {

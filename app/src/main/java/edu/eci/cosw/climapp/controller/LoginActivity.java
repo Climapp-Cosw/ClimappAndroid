@@ -275,7 +275,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+        //Create adapterZones to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
@@ -391,6 +391,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         db.close();
     }
     public void goToMain() {
+
         Intent intent = new Intent(this, MainMapReport.class);
         startActivity(intent);
         finish();

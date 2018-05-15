@@ -1,14 +1,26 @@
 package edu.eci.cosw.climapp.controller;
 
+import android.app.ProgressDialog;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,44 +39,45 @@ import edu.eci.cosw.climapp.network.RetrofitNetwork;
 public class fragmentFavoriteZones extends Fragment {
     private View view;
     private ListView list;
-    private ArrayList<Zone> data ;
+    private String[] data ;
+    private adapterZones adapterZones;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_zones, container, false);
-        list = (ListView) view.findViewById(R.id.zones);
-        data = new ArrayList<Zone>();
-
-
+        list = (ListView) view.findViewById(R.id.listZones);
+        getZones();
+        click();
         return view;
     }
+    private void click(){
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-
-    private void getZones(){
-        final RetrofitNetwork rfN = new RetrofitNetwork();
-        rfN.getZones( new RequestCallback<List<Zone>>() {
             @Override
-            public void onSuccess(List<Zone> response) {
-                for(int i = 0; i < response.size(); i++){
-                    data.add(response.get(i));
-                }
-            }
-            @Override
-            public void onFailed(NetworkException e) {
-                Toast.makeText(getActivity(), "Invalid User.",Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("hola","rlkgreldg");
             }
         });
-
     }
-
-    private void getZonesFavorites(){
-        final RetrofitNetwork rfN = new RetrofitNetwork();
+    private void getZones(){
+        ((ProgressBar)view.findViewById(R.id.progressBar2)).setVisibility(view.VISIBLE);
+        RetrofitNetwork rfN = new RetrofitNetwork();
         rfN.getZones( new RequestCallback<List<Zone>>() {
             @Override
-            public void onSuccess(List<Zone> response) {
+            public void onSuccess(final List<Zone> response) {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        adapterZones a= new adapterZones(getContext(), (ArrayList<Zone>) response);
+                        list.setAdapter(a);
+                        ((ProgressBar)view.findViewById(R.id.progressBar2)).setVisibility(view.GONE);
+                    }
+                });
+
             }
             @Override
             public void onFailed(NetworkException e) {
-                Toast.makeText(getActivity(), "Invalid User.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Invalid User.",Toast.LENGTH_SHORT).show();
             }
         });
 
