@@ -37,8 +37,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.w3c.dom.Text;
 
+import java.util.List;
+
 import edu.eci.cosw.climapp.model.Coordinate;
 import edu.eci.cosw.climapp.model.User;
+import edu.eci.cosw.climapp.model.Zone;
 import edu.eci.cosw.climapp.network.NetworkException;
 import edu.eci.cosw.climapp.network.RequestCallback;
 import edu.eci.cosw.climapp.network.RetrofitNetwork;
@@ -53,6 +56,7 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
     private DrawerLayout mDrawerLayout;
     public TextView txtname, txtemail, txtpoint;
     public ImageView imguser;
+    public List<Zone> data ;
 
 
     @Override
@@ -73,9 +77,11 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
         ConfigInitialUser();
         //----------------------------------------------------------------------------------
         //inicio fragmento mapa1
+
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragments, new fragmentMap());
         ft.commit();
+        toolbar.setTitle("Home Climapp");
     }
     public void ConfigInitialUser(){
         //
@@ -127,9 +133,14 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.home) {
-            Intent intent = new Intent(this, MainMapReport.class);
+
+            /*Intent intent = new Intent(this, MainMapReport.class);
             startActivity(intent);
-            finish();
+            finish();*/
+            toolbar.setTitle("Home Climapp");
+            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragments, new fragmentFavoriteZones());
+            ft.commit();
         }
 
         return super.onOptionsItemSelected(item);
@@ -152,10 +163,12 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             finish();
 
         }else if (id == R.id.nav_zones) {
+            toolbar.setTitle("Favorite zones");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragments, new fragmentFavoriteZones());
             ft.commit();
         } else if (id == R.id.nav_edit_profile) {
+            toolbar.setTitle("Ediit Profile");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragments, new fragmentEditProfile());
             ft.commit();
