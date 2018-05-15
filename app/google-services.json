@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "123914298258",
+    "firebase_url": "https://climapp-6c3ee.firebaseio.com",
+    "project_id": "climapp-6c3ee",
+    "storage_bucket": "climapp-6c3ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123914298258:android:e85579d2f3cdf1c5",
+        "android_client_info": {
+          "package_name": "edu.eci.cosw.climapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123914298258-r4d47gjo9fj6jpclgq98ghou58nhrvjl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8_aNyTFQ2T5xj8Ec5RE3RuDns35p81VI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

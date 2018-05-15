@@ -18,6 +18,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/lbl_singUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="casual"
+            android:text="Sign-Up"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_pressed"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
@@ -36,17 +48,12 @@
                 android:layout_weight="1"
                 app:srcCompat="@drawable/logo" />
 
-            <TextView
-                android:id="@+id/lbl_singUp"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/profile_picture"
+                android:layout_width="95dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="casual"
-                android:text="Sign-Up"
-                android:textAlignment="center"
-                android:textColor="@color/common_google_signin_btn_text_dark_pressed"
-                android:textSize="36sp"
-                android:textStyle="bold" />
+                app:srcCompat="@drawable/picture" />
 
 
         </LinearLayout>
@@ -103,13 +110,30 @@
         <EditText
             android:id="@+id/txt_profile"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="Profile Picture Link"
             android:inputType="textPersonName"
             android:textColor="@android:color/background_light"
-            android:textColorHint="@android:color/background_light" />
+            android:textColorHint="@android:color/background_light"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:onClick="addPhoto"
+            android:text="Add Photo" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btn_register"
@@ -118,13 +142,13 @@
             android:layout_weight="1"
             android:background="@android:color/holo_blue_light"
             android:fontFamily="casual"
-            android:onClick="addNewUser"
+            android:onClick="signInAnonymously"
             android:text="Register"
             android:textStyle="bold" />
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btn_home"

@@ -67,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public static final String PREFS_NAME = "MyPrefsFile";
     public static final String NAME_NAME = "name";
     public static final String PASSWORD_NAME = "Password";
+    public static final String PATH_NAME = "ImgName";
     private User user;
     private String insert;
 
