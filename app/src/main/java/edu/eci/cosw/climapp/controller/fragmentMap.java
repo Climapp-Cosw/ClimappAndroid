@@ -7,12 +7,14 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +29,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import edu.eci.cosw.climapp.R;
 import edu.eci.cosw.climapp.model.Coordinate;
@@ -192,7 +197,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng cali = new LatLng(3.4383, -76.5161);
+        /*LatLng cali = new LatLng(3.4383, -76.5161);
         googleMap.addMarker(new MarkerOptions().position(cali).title("Cali la Sucursal del cielo"));
         CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(10).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -209,6 +214,55 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         LOCATION_REQUEST_CODE);
             }
-        }
+        }*/
+        drawReports();
+
+    }
+
+
+    private void drawReports(){
+        RetrofitNetwork rfN = new RetrofitNetwork();
+        rfN.getReports(new RequestCallback<List<Report>>() {
+            @Override
+            public void onSuccess(final List<Report> response) {
+                getActivity().runOnUiThread(new Runnable(){
+                    public void run(){
+                        Log.i("El tamaño es:",response.size()+"");
+                        for(int i=0; i<response.size(); i++){
+                            drawCircle(response.get(i));
+                        }
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onFailed(NetworkException e) {
+
+            }
+        });
+    }
+
+    private void drawCircle(Report reports){
+        Circle circle;
+        circle = mMap.addCircle(new CircleOptions()
+                .center(new LatLng(reports.getLatitude(), reports.getLongitude()))
+                .radius(700)
+                .strokeWidth(10)
+                .strokeColor(Color.BLUE)
+                .fillColor(Color.argb(128, 255, 0, 0))
+                .clickable(true));
+        mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
+
+            @Override
+            public void onCircleClick(Circle circle) {
+                // Flip the r, g and b components of the circle's
+                // stroke color.
+                int strokeColor = circle.getStrokeColor() ^ 0x00ffffff;
+                circle.setStrokeColor(strokeColor);
+            }
+        });
+
     }
 }
