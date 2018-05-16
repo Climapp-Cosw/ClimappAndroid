@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="edu.eci.cosw.climapp.controller.fragmentEditProfile"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    tools:context="edu.eci.cosw.climapp.controller.fragmentEditProfile">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar2"
@@ -17,173 +18,202 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme" />
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="231dp"
-        android:background="@drawable/background">
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imguser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imageButton"
-            android:layout_alignParentStart="true"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/ic_launcher_background" />
-
-        <EditText
-            android:id="@+id/newnameuser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="14dp"
-            android:ems="10"
-            android:fontFamily="casual"
-            android:inputType="textPersonName"
-            android:paddingStart="20dp"
-            android:text="@string/user"
-            android:textAppearance="@style/TextAppearance.AppCompat"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
-            android:textColorHint="@color/common_google_signin_btn_text_light_default"
-            android:textColorLink="@android:color/holo_blue_bright" />
+            android:id="@+id/profilePicture"
+            android:layout_width="0dp"
+            android:layout_height="170dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/picture"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/newnameuser"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="50dp"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/ic_camera_alt_black_24dp" />
-
-    </RelativeLayout>
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="177dp">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <EditText
-                android:id="@+id/newemail"
-                android:layout_width="304dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:ems="10"
-                android:fontFamily="casual"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:paddingStart="20dp"
-                android:text="@string/email"
-                android:textAppearance="@style/TextAppearance.AppCompat"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textColorHint="@color/common_google_signin_btn_text_light_default"
-                android:textColorLink="@android:color/holo_blue_bright" />
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ic_email_black_24dp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="337dp"
-            android:layout_height="match_parent">
-
-            <EditText
-                android:id="@+id/newpassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:ems="10"
-                android:fontFamily="casual"
-                android:inputType="textWebPassword"
-                android:paddingStart="20dp"
-                android:text="@string/email"
-                android:textAppearance="@style/TextAppearance.AppCompat"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textColorHint="@color/common_google_signin_btn_text_light_default"
-                android:textColorLink="@android:color/holo_blue_bright" />
-
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ic_keyboard_black_24dp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="368dp"
-            android:layout_height="match_parent">
-
-            <EditText
-                android:id="@+id/newconfirmpassword"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:ems="10"
-                android:fontFamily="casual"
-                android:inputType="textWebPassword"
-                android:paddingStart="20dp"
-                android:text="@string/prompt_password"
-                android:textAppearance="@style/TextAppearance.AppCompat"
-                android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textColorHint="@color/common_google_signin_btn_text_light_default"
-                android:textColorLink="@android:color/holo_blue_bright" />
-
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/numpoints"
-                android:src="@drawable/ic_check_black_24dp" />
-
-        </TableRow>
-
-    </TableLayout>
+            android:id="@+id/btn_image"
+            android:layout_width="52dp"
+            android:layout_height="59dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_camera_alt_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/profilePicture"
+            app:layout_constraintHorizontal_bias="0.867"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.928" />
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="76dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/ok"
-            android:layout_width="208dp"
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/holo_blue_light"
             android:fontFamily="casual"
-            android:text="@string/ok"
+            android:text="Name:"
+            android:textColor="@android:color/background_light"
             android:textStyle="bold" />
 
-        <Space
-            android:layout_width="80dp"
-            android:layout_height="46dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/calcel"
-            android:layout_width="199dp"
+        <EditText
+            android:id="@+id/txt_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/holo_blue_light"
+            android:ems="10"
             android:fontFamily="casual"
-            android:text="@string/cancel" />
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:textAlignment="textStart"
+            android:textColor="@android:color/background_light"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:text="Email:"
+            android:textColor="@android:color/background_light"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/txt_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:fontFamily="casual"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/background_light"
+            android:textStyle="bold" />
 
     </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/Progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:text="Progress"
+            android:textAlignment="textStart"
+            android:textColor="@android:color/background_dark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/txt_level"
+            android:layout_width="68dp"
+            android:layout_height="wrap_content"
+            android:autoText="false"
+            android:editable="false"
+            android:ems="10"
+            android:enabled="false"
+            android:fontFamily="casual"
+            android:hint="Level"
+            android:inputType="number"
+            android:text="5"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_dark"
+            android:textColorLink="@android:color/holo_orange_dark"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/lbl_level"
+            app:layout_constraintTop_toBottomOf="@+id/Progress" />
+
+        <ProgressBar
+            android:id="@+id/progressBarLevel"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="350dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="8dp"
+            android:max="100"
+            android:progress="80"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_level"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/lbl_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="68dp"
+            android:layout_marginTop="12dp"
+            android:fontFamily="casual"
+            android:text="Level:"
+            android:textColor="@android:color/background_dark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Progress" />
+
+        <TextView
+            android:id="@+id/lbl_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:enabled="false"
+            android:fontFamily="casual"
+            android:text="Points"
+            android:textColor="@android:color/background_dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.254"
+            app:layout_constraintStart_toEndOf="@+id/txt_level"
+            app:layout_constraintTop_toBottomOf="@+id/Progress" />
+
+        <EditText
+            android:id="@+id/txt_points"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            android:ems="10"
+            android:enabled="false"
+            android:fontFamily="casual"
+            android:inputType="number"
+            android:text="250"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_dark"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/lbl_points"
+            app:layout_constraintTop_toBottomOf="@+id/Progress" />
+    </android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light"
+        android:text="Save" />
+
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_dark"
+        android:text="Back" />
+
 
 </LinearLayout>

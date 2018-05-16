@@ -21,6 +21,8 @@ public interface Network {
 
     void userByEmail(String s, RequestCallback<User> requestCallback);
 
+    void updateUser(int id, RequestCallback<User> requestCallback, String token, User user);
+
     void createReport(Report report,RequestCallback<ResponseBody> requestCallback);
 
     void getReports(RequestCallback<List<Report>> requestCallback);

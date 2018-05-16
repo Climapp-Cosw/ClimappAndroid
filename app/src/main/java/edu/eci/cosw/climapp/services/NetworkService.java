@@ -31,6 +31,9 @@ public interface NetworkService {
     @GET( "users/{email}" )
     Call<User> userByEmail(@Path("email")String email);
 
+    @POST( "users/updateProfile/{id}" )
+    Call<User> updateProfile(@Body User user, @Path("id")int id);
+
     @POST( "reports/newReport" )
     Call<ResponseBody> createReport(@Body Report report);
 
