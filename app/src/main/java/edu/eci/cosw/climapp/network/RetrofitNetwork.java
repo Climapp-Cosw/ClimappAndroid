@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 
 import edu.eci.cosw.climapp.model.LoginWrapper;
 import edu.eci.cosw.climapp.model.Report;
+import edu.eci.cosw.climapp.model.Sensor;
 import edu.eci.cosw.climapp.model.Token;
 import edu.eci.cosw.climapp.model.User;
 import edu.eci.cosw.climapp.model.Zone;
@@ -156,6 +157,24 @@ public class RetrofitNetwork implements Network {
                 try                {
                     Response<List<Zone>> execute= call.execute();
                     requestCallback.onSuccess(execute.body());
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+    }
+
+    @Override
+    public void getReportsSensors(final RequestCallback<List<Sensor>> requestCallback, String token) {
+        addSecureTokenInterceptor(token);
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<List<Sensor>> call = networkService.getReportsSensor();
+                try                {
+                    Response<List<Sensor>> execute= call.execute();
+                    requestCallback.onSuccess( execute.body() );
                 }
                 catch ( IOException e )                {
                     requestCallback.onFailed( new NetworkException(null, e ) );

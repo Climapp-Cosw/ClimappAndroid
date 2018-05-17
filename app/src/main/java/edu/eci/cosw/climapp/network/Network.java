@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.eci.cosw.climapp.model.LoginWrapper;
 import edu.eci.cosw.climapp.model.Report;
+import edu.eci.cosw.climapp.model.Sensor;
 import edu.eci.cosw.climapp.model.Token;
 import edu.eci.cosw.climapp.model.User;
 import edu.eci.cosw.climapp.model.Zone;
@@ -28,4 +29,6 @@ public interface Network {
     void getReports(RequestCallback<List<Report>> requestCallback);
 
     void getZones(RequestCallback<List<Zone>> requestCallback);
+
+    void getReportsSensors(RequestCallback<List<Sensor>> requestCallback, String token);
 }

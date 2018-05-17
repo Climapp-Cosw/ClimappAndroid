@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,6 +43,7 @@ import java.util.List;
 import edu.eci.cosw.climapp.R;
 import edu.eci.cosw.climapp.model.Coordinate;
 import edu.eci.cosw.climapp.model.Report;
+import edu.eci.cosw.climapp.model.Sensor;
 import edu.eci.cosw.climapp.model.User;
 import edu.eci.cosw.climapp.model.Zone;
 import edu.eci.cosw.climapp.network.NetworkException;
@@ -64,7 +66,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
     private View view;
     private int rain;
     private int weather;
-
+    private String token;
 
 
     @Override
@@ -81,6 +83,10 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                 selectWeather(view);
             }
         });
+
+
+        SharedPreferences settings = getActivity().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        token = settings.getString(LoginActivity.TOKEN_NAME, "");
         return view;
     }
 
@@ -196,8 +202,8 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        /*LatLng cali = new LatLng(3.4383, -76.5161);
+    //Poner la ubicacion en la zona
+        LatLng cali = new LatLng(3.4383, -76.5161);
         googleMap.addMarker(new MarkerOptions().position(cali).title("Cali la Sucursal del cielo"));
         CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(10).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -214,9 +220,9 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         LOCATION_REQUEST_CODE);
             }
-        }*/
+        }
         drawReports();
-
+        drawReportsSensor();
     }
 
 
@@ -227,40 +233,75 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
             public void onSuccess(final List<Report> response) {
                 getActivity().runOnUiThread(new Runnable(){
                     public void run(){
-                        Log.i("El tamaño es:",response.size()+"");
-                        for(int i=0; i<response.size(); i++){
-                            drawCircle(response.get(i));
-                        }
+                    for(int i=0; i<response.size(); i++){
+                        drawCircle(response.get(i));
+                    }
                     }
                 });
-
-
             }
-
             @Override
             public void onFailed(NetworkException e) {
-
+                Toast.makeText(getActivity(), "Error on reports",Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void drawCircle(Report reports){
+    private void drawReportsSensor(){
+        RetrofitNetwork rfN = new RetrofitNetwork();
+        rfN.getReportsSensors(new RequestCallback<List<Sensor>>() {
+            @Override
+            public void onSuccess(final List<Sensor> response) {
+                getActivity().runOnUiThread(new Runnable(){
+                    public void run(){
+                        for(int i=0; i<response.size(); i++){
+                            drawCircleSensor(response.get(i));
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailed(NetworkException e) {
+                Toast.makeText(getActivity(), "Error on reports",Toast.LENGTH_SHORT).show();
+            }
+        }, token);
+    }
+
+    private void drawCircle(final Report reports){
         Circle circle;
         circle = mMap.addCircle(new CircleOptions()
                 .center(new LatLng(reports.getLatitude(), reports.getLongitude()))
-                .radius(700)
-                .strokeWidth(10)
-                .strokeColor(Color.BLUE)
+                .radius(500)
+                .fillColor(Color.argb(128, 25, 72, 189))
+                .clickable(true));
+        mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
+
+            @Override
+            public void onCircleClick(Circle circle) {
+                Toast.makeText(getActivity(), "Report"+reports.getDateTimeReport(),Toast.LENGTH_SHORT).show();
+                // Flip the r, g and b components of the circle's
+                // stroke color.
+                //int strokeColor = circle.getStrokeColor() ^ 0x00ffffff;
+                //circle.setStrokeColor(strokeColor);
+            }
+        });
+    }
+
+    private void drawCircleSensor(Sensor sensor){
+
+        mMap.addCircle(new CircleOptions()
+                .center(new LatLng(sensor.getLatitude(), sensor.getLongitude()))
+                .radius(500)
+                .strokeWidth(5)
+                .strokeColor(Color.BLACK)
                 .fillColor(Color.argb(128, 255, 0, 0))
                 .clickable(true));
         mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
 
             @Override
             public void onCircleClick(Circle circle) {
-                // Flip the r, g and b components of the circle's
-                // stroke color.
-                int strokeColor = circle.getStrokeColor() ^ 0x00ffffff;
-                circle.setStrokeColor(strokeColor);
+
+                //Toast.makeText(getActivity(), "Sensor",Toast.LENGTH_SHORT).show();
             }
         });
 
