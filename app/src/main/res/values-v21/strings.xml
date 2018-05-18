@@ -20,4 +20,9 @@
     <string name="namezone">namezone</string>
     <string name="checkbox">CheckBox</string>
     <string name="textview">TextView</string>
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+    <string name="_250">250</string>
+    <string name="points">Points</string>
+    <string name="name">Name:</string>
 </resources>

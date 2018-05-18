@@ -34,6 +34,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -81,7 +82,7 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragments, new fragmentMap());
         ft.commit();
-        toolbar.setTitle("Home Climapp");
+        toolbar.setTitle("Home");
     }
     public void ConfigInitialUser(){
         //
@@ -102,6 +103,9 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
                 txtname.setText(c.getString(1));
                 txtemail.setText(c.getString(2));
                 txtpoint.setText(String.valueOf(c.getInt(4)));
+                if(c.getString(5)!=null){
+                    Picasso.with(this).load(c.getString(5)).into(imguser);
+                }
             } while(c.moveToNext());
         }
         db.close();
@@ -137,9 +141,9 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             /*Intent intent = new Intent(this, MainMapReport.class);
             startActivity(intent);
             finish();*/
-            toolbar.setTitle("Home Climapp");
+            toolbar.setTitle("Map");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragments, new fragmentFavoriteZones());
+            ft.replace(R.id.fragments, new fragmentMap());
             ft.commit();
         }
 
@@ -168,7 +172,7 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             ft.replace(R.id.fragments, new fragmentFavoriteZones());
             ft.commit();
         } else if (id == R.id.nav_edit_profile) {
-            toolbar.setTitle("Ediit Profile");
+            toolbar.setTitle("Edit Profile");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragments, new fragmentEditProfile());
             ft.commit();

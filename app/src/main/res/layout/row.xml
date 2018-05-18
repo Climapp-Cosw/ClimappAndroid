@@ -11,12 +11,16 @@
         android:id="@+id/namezone1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/textview" />
+        android:text="@string/textview"
+        android:textColor="@color/colorAccent"/>
 
     <CheckBox
         android:id="@+id/checkBox1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/checkbox" />
+        android:text="@string/checkbox"
+        android:clickable="true"
+        android:focusable="false"
+        android:textColor="@color/colorAccent"/>
 
 </LinearLayout>

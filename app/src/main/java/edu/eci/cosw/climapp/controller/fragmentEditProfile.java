@@ -122,11 +122,12 @@ public class fragmentEditProfile extends Fragment {
         bdSQLite usdbh = new bdSQLite(getContext(), 1);
         SQLiteDatabase db = usdbh.getReadableDatabase();
         Cursor c = db.rawQuery(" SELECT * FROM users WHERE email='"+settings.getString("userEmail","")+"' ", null);
+
         if (c.moveToFirst()) {
             //Recorremos el cursor hasta que no haya más registros
             do {
-                //txtname.setText(c.getString(1));
                 email = c.getString(2);
+
             } while(c.moveToNext());
         }
         db.close();
@@ -134,23 +135,22 @@ public class fragmentEditProfile extends Fragment {
         RetrofitNetwork rfN = new RetrofitNetwork();
         rfN.userByEmail(email, new RequestCallback<User>() {
             @Override
-            public void onSuccess(User response) {
+            public void onSuccess(final User response) {
                 user = response;
-                txtemail.setText(response.getEmail());
-
-                txtname.setText(response.getName());
-                urlImage = response.getImage();
-                points = response.getPoints();
-                txt_points.setText(points+"");
-                txt_level.setText(getLevel(points)+"");
-                progress.setProgress(getProgress(points));
-
-                if(response.getImage()!=null){
+                if(response!=null){
                     Handler uiHandler = new Handler(Looper.getMainLooper());
                     uiHandler.post(new Runnable(){
                         @Override
                         public void run() {
-                            Picasso.with(getContext()).load(urlImage).into(imguser);
+                            txtemail.setText(user.getEmail());
+                            txtname.setText(user.getName());
+                            urlImage = user.getImage();
+                            points = user.getPoints();
+                            txt_points.setText(points+"");
+                            txt_level.setText(getLevel(points)+"");
+                            progress.setProgress(getProgress(points));
+                            if(response.getImage()!=null){
+                                Picasso.with(getContext()).load(urlImage).into(imguser);}
                         }
                     });
 
@@ -331,12 +331,32 @@ public class fragmentEditProfile extends Fragment {
     public void saveUser(){
         user.setEmail(txtemail.getText().toString());
         user.setName(txtname.getText().toString());
+        //user.setPassword(txt.getText().toString());
         RetrofitNetwork rfN = new RetrofitNetwork();
         rfN.updateUser(user.getId(), new RequestCallback<User>() {
             @Override
-            public void onSuccess(User user) {
-                updateDatabaseInternal();
-                goToMain();
+            public void onSuccess(User user2) {
+                SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(LoginActivity.TOKEN_NAME, token);
+                editor.putString("userEmail", user.getEmail());
+                editor.commit();
+                bdSQLite usdbh = new bdSQLite(getContext(), 1);
+                SQLiteDatabase db = usdbh.getWritableDatabase();
+                db.execSQL(" UPDATE users SET img='"+user.getImage()+"', email='"+user.getEmail()+"', name='"+user.getName()+"' WHERE id="+String.valueOf(user.getId())+";");
+                db.close();
+
+                Handler uiHandler = new Handler(Looper.getMainLooper());
+                uiHandler.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        final android.support.v7.app.AlertDialog.Builder builder2 = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                        builder2.setMessage("Updated user");
+                        final android.support.v7.app.AlertDialog alert2 =builder2.create();
+                        alert2.show();
+                    }
+                });
+                //goToMain();
             }
 
             @Override
@@ -352,7 +372,4 @@ public class fragmentEditProfile extends Fragment {
     }
 
 
-    public void updateDatabaseInternal(){
-
-    }
 }

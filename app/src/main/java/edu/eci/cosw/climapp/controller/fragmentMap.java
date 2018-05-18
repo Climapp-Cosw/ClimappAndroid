@@ -164,11 +164,11 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                             alert.dismiss();
                             getActivity().runOnUiThread(new Runnable() {
                                 public void run() {
+                                    ((ProgressBar)v.findViewById(R.id.progressBar4)).setVisibility(view.GONE);
                                     final AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
                                     builder2.setMessage("Report created");
                                     final AlertDialog alert2 =builder2.create();
                                     alert2.show();
-                                    ((ProgressBar)v.findViewById(R.id.progressBar4)).setVisibility(view.GONE);
 
                                 }
                             });
@@ -202,10 +202,10 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-    //Poner la ubicacion en la zona
-        LatLng cali = new LatLng(3.4383, -76.5161);
-        googleMap.addMarker(new MarkerOptions().position(cali).title("Cali la Sucursal del cielo"));
-        CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(10).build();
+        //Poner la ubicacion en la zona y marcador de mi ubicacion y el zoom
+        LatLng cali = new LatLng(4.7829933, -74.04244039999999);
+        googleMap.addMarker(new MarkerOptions().position(cali).title("My position"));
+        CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(14).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -241,7 +241,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
             }
             @Override
             public void onFailed(NetworkException e) {
-                Toast.makeText(getActivity(), "Error on reports",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Error on reports",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -262,7 +262,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onFailed(NetworkException e) {
-                Toast.makeText(getActivity(), "Error on reports",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Error on reports",Toast.LENGTH_SHORT).show();
             }
         }, token);
     }

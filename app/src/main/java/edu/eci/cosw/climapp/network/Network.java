@@ -3,6 +3,7 @@ package edu.eci.cosw.climapp.network;
 import java.util.List;
 
 
+import edu.eci.cosw.climapp.R;
 import edu.eci.cosw.climapp.model.LoginWrapper;
 import edu.eci.cosw.climapp.model.Report;
 import edu.eci.cosw.climapp.model.Sensor;
@@ -29,6 +30,13 @@ public interface Network {
     void getReports(RequestCallback<List<Report>> requestCallback);
 
     void getZones(RequestCallback<List<Zone>> requestCallback);
+
+    void getFavoriteZones(String email,RequestCallback<List<Zone>> requestCallback,String token);
+
+    void addFavoriteZones(String email,Zone zone,RequestCallback<List<Zone>> requestCallback,String token);
+
+    void deleteFavoriteZones(String email, Zone zone, RequestCallback<List<Zone>> requestCallback, String token);
+
 
     void getReportsSensors(RequestCallback<List<Sensor>> requestCallback, String token);
 }

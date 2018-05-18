@@ -8,7 +8,7 @@ import java.util.List;
  */
 
 public class Zone {
-
+    private int id;
     private int number;
     private String name;
     private List<Coordinate> coordinates=new ArrayList<>();
@@ -26,9 +26,10 @@ public class Zone {
      * @param name
      * @param coordinates
      */
-    public Zone(int number, String name, List<Coordinate> coordinates){
+    public Zone(int id, int number, String name, List<Coordinate> coordinates){
         this.number = number;
         this.name = name;
+        this.id = id;
         this.coordinates = coordinates;
     }
 
@@ -54,5 +55,13 @@ public class Zone {
 
     public void setCoordinates(List<Coordinate> coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

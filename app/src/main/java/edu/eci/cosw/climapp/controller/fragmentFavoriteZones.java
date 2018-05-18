@@ -1,24 +1,15 @@
 package edu.eci.cosw.climapp.controller;
 
-import android.app.ProgressDialog;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -38,6 +29,7 @@ import edu.eci.cosw.climapp.network.RetrofitNetwork;
 
 public class fragmentFavoriteZones extends Fragment {
     private View view;
+    private View view2;
     private ListView list;
     private String[] data ;
     private adapterZones adapterZones;
@@ -46,33 +38,41 @@ public class fragmentFavoriteZones extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_zones, container, false);
+        view2 = inflater.inflate(R.layout.row, container, false);
         list = (ListView) view.findViewById(R.id.listZones);
         getZones();
-        click();
+
+
         return view;
     }
     private void click(){
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("hola","rlkgreldg");
-            }
-        });
+
     }
     private void getZones(){
         ((ProgressBar)view.findViewById(R.id.progressBar2)).setVisibility(view.VISIBLE);
-        RetrofitNetwork rfN = new RetrofitNetwork();
+        final RetrofitNetwork rfN = new RetrofitNetwork();
         rfN.getZones( new RequestCallback<List<Zone>>() {
             @Override
             public void onSuccess(final List<Zone> response) {
-                getActivity().runOnUiThread(new Runnable() {
-                    public void run() {
-                        adapterZones a= new adapterZones(getContext(), (ArrayList<Zone>) response);
-                        list.setAdapter(a);
-                        ((ProgressBar)view.findViewById(R.id.progressBar2)).setVisibility(view.GONE);
+                SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+                rfN.getFavoriteZones(settings.getString("userEmail",""),new RequestCallback<List<Zone>>(){
+                    @Override
+                    public void onSuccess(final List<Zone> response2) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                adapterZones= new adapterZones(getContext(), (ArrayList<Zone>) response,(ArrayList<Zone>) response2);
+                                list.setAdapter(adapterZones);
+                                ((ProgressBar)view.findViewById(R.id.progressBar2)).setVisibility(view.GONE);
+                            }
+                        });
                     }
-                });
+                    @Override
+                    public void onFailed(NetworkException e) {
+
+                    }
+                },settings.getString(LoginActivity.TOKEN_NAME, ""));
+
 
             }
             @Override

@@ -124,7 +124,8 @@ public class SignUpActivity extends AppCompatActivity {
                         RetrofitNetwork rfN = new RetrofitNetwork();
                         rfN.signUp(user, new RequestCallback<User>() {
                             @Override
-                            public void onSuccess(User user) {
+                            public void onSuccess(User user2) {
+                                user.setId(user2.getId());
                                 RetrofitNetwork rf = new RetrofitNetwork();
                                 LoginWrapper lw = new LoginWrapper(txt_email.getText().toString(), txt_password.getText().toString(), txt_email.getText().toString());
                                 rf.login(lw, new RequestCallback<Token>() {
@@ -203,14 +204,17 @@ public class SignUpActivity extends AppCompatActivity {
     private void insertUserBD(){
         bdSQLite usdbh = new bdSQLite(this, 1);
         SQLiteDatabase db = usdbh.getWritableDatabase();
+
         usdbh.onUpgrade(db,1, 1);
-        db.execSQL("INSERT INTO users (id, name,email,password,points) " + "VALUES ("
-                + "1, '"
+
+        db.execSQL("INSERT INTO users (id, name,email,password,points,img) " + "VALUES ("
+                + user.getId()+", '"
                 + user.getName() +"', '"
                 + user.getEmail()+"', '"
                 + user.getPassword()+"',"
-                + user.getPoints()
-                + ")");
+                + user.getPoints()+",'"
+                + urlFinal
+                + "')");
         db.close();
     }
     public void goToMain(String token) {

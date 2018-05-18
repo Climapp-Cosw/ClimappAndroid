@@ -44,6 +44,15 @@ public interface NetworkService {
     @GET( "zones/" )
     Call<List<Zone>> getZones();
 
+    @POST( "zones/{email}" )
+    Call<List<Zone>> addZoneFavorite(@Body Zone z,@Path("email") String email);
+
+    @POST( "zones/deletedFavorites/{email}" )
+    Call<List<Zone>> deleteZoneFavorite(@Body Zone z,@Path("email") String email);
+
+    @GET( "zones/favorites/{email}" )
+    Call<List<Zone>> getFavoriteZones(@Path("email") String email);
+
     @GET( "sensors/" )
     Call<List<Sensor>> getReportsSensor();
 }

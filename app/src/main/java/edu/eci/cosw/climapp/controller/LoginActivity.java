@@ -355,13 +355,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 rf.userByEmail(mEmail, new RequestCallback<User>() {
                     @Override
                     public void onSuccess(User response) {
-                        insertUserBD("INSERT INTO users (id, name,email,password,points) " + "VALUES ("
+                        insertUserBD("INSERT INTO users (id, name,email,password,points,img) " + "VALUES ("
                                 + response.getId() + ", '"
                                 + response.getName() +"', '"
                                 + response.getEmail()+"', '"
                                 + response.getPassword()+"',"
-                                + response.getPoints()
-                                + ")");
+                                + response.getPoints()+",'"
+                                + response.getImage()
+                                + "')");
                     }
                     @Override
                     public void onFailed(NetworkException e) {

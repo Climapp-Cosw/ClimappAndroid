@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class bdSQLite extends SQLiteOpenHelper {
         //Sentencia SQL para crear la tabla de Usuarios
-        String sqlCreate = "CREATE TABLE users (id INTEGER primary key, name varchar,email varchar,password varchar,points int)";
+        String sqlCreate = "CREATE TABLE users (id INTEGER primary key, name varchar,email varchar,password varchar,points int,img varchar)";
         public  bdSQLite(Context contexto, int version) {
             super(contexto, "users", null, version);
         }

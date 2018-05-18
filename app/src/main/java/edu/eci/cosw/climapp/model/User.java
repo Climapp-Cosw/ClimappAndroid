@@ -45,13 +45,14 @@ public class User implements Serializable {
      * @param image
      * @param points
      */
-    public User(int id, String email, String password, String name, String image,int points ) {
+    public User(int id, String email, String password, String name, String image,int points,List<Zone> z ) {
         this.email = email;
         this.password = password;
         this.image = image;
         this.name = name;
         this.points=points;
         this.id=id;
+        this.zones=z;
     }
 
     public String getName(){

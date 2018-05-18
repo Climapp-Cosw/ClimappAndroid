@@ -27,8 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetrofitNetwork implements Network {
-    private static final String BASE_URL = "http://10.0.2.2:8080/";
-    //private static final String BASE_URL = "http://192.168.0.15:8080/";
+    //private static final String BASE_URL = "http://10.0.2.2:8080/";
+    private static final String BASE_URL = "http://192.168.0.15:8080/";
     private NetworkService networkService;
 
     private ExecutorService backgroundExecutor = Executors.newFixedThreadPool( 1 );
@@ -157,6 +157,60 @@ public class RetrofitNetwork implements Network {
                 try                {
                     Response<List<Zone>> execute= call.execute();
                     requestCallback.onSuccess(execute.body());
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+    }
+
+    @Override
+    public void getFavoriteZones(final String email, final RequestCallback<List<Zone>> requestCallback, String token) {
+        addSecureTokenInterceptor(token);
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<List<Zone>> call = networkService.getFavoriteZones(email);
+                try                {
+                    Response<List<Zone>> execute= call.execute();
+                    requestCallback.onSuccess( execute.body() );
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+    }
+
+    @Override
+    public void addFavoriteZones(final String email,final Zone z ,final RequestCallback<List<Zone>> requestCallback, String token) {
+        addSecureTokenInterceptor(token);
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<List<Zone>> call = networkService.addZoneFavorite(z,email);
+                try                {
+                    Response<List<Zone>> execute= call.execute();
+                    requestCallback.onSuccess( execute.body() );
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+    }
+
+    @Override
+    public void deleteFavoriteZones(final String email,final Zone z ,final RequestCallback<List<Zone>> requestCallback, String token) {
+        addSecureTokenInterceptor(token);
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<List<Zone>> call = networkService.deleteZoneFavorite(z,email);
+                try                {
+                    Response<List<Zone>> execute= call.execute();
+                    requestCallback.onSuccess( execute.body() );
                 }
                 catch ( IOException e )                {
                     requestCallback.onFailed( new NetworkException(null, e ) );
