@@ -42,6 +42,10 @@ public class fragmentFavoriteZones extends Fragment {
         list = (ListView) view.findViewById(R.id.listZones);
         getZones();
 
+        final android.support.v7.app.AlertDialog.Builder builder2 = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        builder2.setMessage("Select or unselect the zones you want to subscribe to.");
+        final android.support.v7.app.AlertDialog alert2 =builder2.create();
+        alert2.show();
 
         return view;
     }
