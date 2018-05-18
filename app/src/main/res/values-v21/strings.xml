@@ -15,7 +15,6 @@
     <string name="cloudy">Cloudy</string>
     <string name="user">User</string>
     <string name="email">Email</string>
-    <string name="todo">TODO</string>
     <string name="numpoints">numPoints</string>
     <string name="namezone">namezone</string>
     <string name="checkbox">CheckBox</string>
@@ -25,4 +24,5 @@
     <string name="_250">250</string>
     <string name="points">Points</string>
     <string name="name">Name:</string>
+    <string name="todo">TODO</string>
 </resources>

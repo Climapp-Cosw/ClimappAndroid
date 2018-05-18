@@ -38,6 +38,9 @@ public interface NetworkService {
     @POST( "reports/newReport" )
     Call<ResponseBody> createReport(@Body Report report);
 
+    @POST( "reports/" )
+    Call<Report> updateReport(@Body Report report);
+
     @GET( "reports/" )
     Call<List<Report>> getReports();
 

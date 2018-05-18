@@ -1,12 +1,8 @@
 package edu.eci.cosw.climapp.controller;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -28,10 +26,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
@@ -54,6 +54,7 @@ import okhttp3.ResponseBody;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
+import static android.database.sqlite.SQLiteDatabase.releaseMemory;
 
 /**
  * Created by LauraRB on 11/05/2018.
@@ -274,19 +275,73 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                 .radius(500)
                 .fillColor(Color.argb(128, 25, 72, 189))
                 .clickable(true));
-        mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
+        LatLng pos = new LatLng(reports.getLatitude(),  reports.getLongitude());
 
+        Marker m =mMap.addMarker(
+                new MarkerOptions().position(pos).
+                        title("Report").
+                        snippet(" Rain: "+reports.getRain()+" Weather: "+reports.getWeather()).
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+        m.setTag(reports);
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public void onCircleClick(Circle circle) {
-                Toast.makeText(getActivity(), "Report"+reports.getDateTimeReport(),Toast.LENGTH_SHORT).show();
-                // Flip the r, g and b components of the circle's
-                // stroke color.
-                //int strokeColor = circle.getStrokeColor() ^ 0x00ffffff;
-                //circle.setStrokeColor(strokeColor);
+            public boolean onMarkerClick(Marker marker) {
+                clickM(marker);
+                return false;
             }
         });
     }
 
+    private void clickM(final Marker marker1){
+        final AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+        builder1.setCancelable(true);
+        LayoutInflater inflater = getLayoutInflater();
+        final View v=inflater.inflate(R.layout.activity_dialog_votar, null);
+        builder1.setView(v);
+        //((TextView)v.findViewById(R.id.textmap)).setText(marker1.getSnippet().toString());
+
+        final AlertDialog alert11 = builder1.create();
+        v.findViewById(R.id.upbt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Report rp= marker1.getTag().getClass();
+                //rp.setLike(rp.getLike()+1);
+                //updateReport(rp,v);
+            }
+        });
+        v.findViewById(R.id.downbt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Report rp=(Report) marker1.getTag();
+                //rp.setDislike(rp.getDislike()+1);
+                //updateReport(rp,v);
+            }
+        });
+        alert11.show();
+    }
+    private void updateReport(Report report,View v1){
+        final RetrofitNetwork rfN = new RetrofitNetwork();
+        SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        rfN.updateReport(report, new RequestCallback<Report>() {
+            @Override
+            public void onSuccess(Report response) {
+                //alert.dismiss();
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        //((ProgressBar)v1.findViewById(R.id.progressBar4)).setVisibility(view.GONE);
+                        final AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                        builder2.setMessage("Report update");
+                        final AlertDialog alert2 =builder2.create();
+                        alert2.show();
+                    }
+                });
+            }
+            @Override
+            public void onFailed(NetworkException e) {
+                Toast.makeText(getContext(), "Invalid User.",Toast.LENGTH_SHORT).show();
+            }
+        },settings.getString(LoginActivity.TOKEN_NAME,""));
+    }
     private void drawCircleSensor(Sensor sensor){
 
         mMap.addCircle(new CircleOptions()
@@ -296,14 +351,12 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                 .strokeColor(Color.BLACK)
                 .fillColor(Color.argb(128, 255, 0, 0))
                 .clickable(true));
-        mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
+        LatLng pos = new LatLng(sensor.getLatitude(),  sensor.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(pos).
+                title("Sensor").
+                snippet("Rain:"+sensor.isRain()+" Pollution:"+sensor.getPollution()+" Humidity:"+sensor.getHumidity()+"% Temp:"+sensor.getTemperature()+"°C").
+                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
-            @Override
-            public void onCircleClick(Circle circle) {
-
-                //Toast.makeText(getActivity(), "Sensor",Toast.LENGTH_SHORT).show();
-            }
-        });
 
     }
 }

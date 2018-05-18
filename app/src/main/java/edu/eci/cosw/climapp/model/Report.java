@@ -7,6 +7,7 @@ import java.util.Date;
  */
 
 public class Report {
+    private int id;
     private Date dateTimeReport;
     private int weather;
     private User reportedUser;
@@ -38,7 +39,28 @@ public class Report {
         this.rain=rain;
     }
 
+    public Report(int id,double lat, double lon, int clima, User u, Zone z,int dislike,int like,int rain) {
+        this.dateTimeReport =  null;
+        this.weather = clima;
+        this.reportedUser = u;
+        this.zone = z;
+        this.longitude = lon;
+        this.latitude = lat;
+        this.dislike = dislike;
+        this.like = like;
+        this.rain=rain;
+        this.id=id;
+    }
+
     public Report() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Date getDateTimeReport() {

@@ -37,6 +37,7 @@ public interface Network {
 
     void deleteFavoriteZones(String email, Zone zone, RequestCallback<List<Zone>> requestCallback, String token);
 
+    void updateReport(Report report, RequestCallback<Report> requestCallback, String token);
 
     void getReportsSensors(RequestCallback<List<Sensor>> requestCallback, String token);
 }
