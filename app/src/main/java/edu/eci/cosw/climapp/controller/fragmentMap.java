@@ -340,16 +340,23 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                     report.setLike(report.getLike()+1);
                     updateReport(report,v);
                     ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
-
+                    ((ImageButton) v.findViewById(R.id.upbt)).setVisibility(View.GONE);
+                    ((Space) v.findViewById(R.id.space1)).setVisibility(View.GONE);
+                    ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.GONE);
+                    marker.setTag(report);
                 }
             });
             v.findViewById(R.id.downbt).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Report report=(Report) marker.getTag();
-                    report.setLike(report.getDislike()+1);
+                    report.setDislike(report.getDislike()+1);
                     updateReport(report,v);
                     ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
+                    ((ImageButton) v.findViewById(R.id.upbt)).setVisibility(View.GONE);
+                    ((Space) v.findViewById(R.id.space1)).setVisibility(View.GONE);
+                    ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.GONE);
+                    marker.setTag(report);
                 }
             });
             alert11.show();
