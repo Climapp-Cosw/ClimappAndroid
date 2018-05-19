@@ -1,9 +1,12 @@
 package edu.eci.cosw.climapp.controller;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -15,11 +18,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.Space;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,16 +35,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import edu.eci.cosw.climapp.R;
@@ -49,12 +51,9 @@ import edu.eci.cosw.climapp.model.Zone;
 import edu.eci.cosw.climapp.network.NetworkException;
 import edu.eci.cosw.climapp.network.RequestCallback;
 import edu.eci.cosw.climapp.network.RetrofitNetwork;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-import static android.content.Context.MODE_PRIVATE;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
-import static android.database.sqlite.SQLiteDatabase.releaseMemory;
 
 /**
  * Created by LauraRB on 11/05/2018.
@@ -205,7 +204,9 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         //Poner la ubicacion en la zona y marcador de mi ubicacion y el zoom
         LatLng cali = new LatLng(4.7829933, -74.04244039999999);
-        googleMap.addMarker(new MarkerOptions().position(cali).title("My position"));
+        googleMap.addMarker(new MarkerOptions().position(cali).title("My position")
+                .rotation(-45).flat(true)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(14).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -235,7 +236,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                 getActivity().runOnUiThread(new Runnable(){
                     public void run(){
                     for(int i=0; i<response.size(); i++){
-                        drawCircle(response.get(i));
+                        drawCircleReport(response.get(i));
                     }
                     }
                 });
@@ -268,17 +269,34 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         }, token);
     }
 
-    private void drawCircle(final Report reports){
-        Circle circle;
-        circle = mMap.addCircle(new CircleOptions()
-                .center(new LatLng(reports.getLatitude(), reports.getLongitude()))
-                .radius(500)
+    private LatLng drawCircle(double lat, double lng){
+        mMap.addCircle(new CircleOptions()
+                .center(new LatLng(lat, lng))
+                .radius(450)
+                .strokeWidth(2)
                 .fillColor(Color.argb(128, 25, 72, 189))
-                .clickable(true));
-        LatLng pos = new LatLng(reports.getLatitude(),  reports.getLongitude());
+                .clickable(false));
+        return new LatLng(lat,  lng);
+    }
 
+    private void drawCircleSensor(Sensor sensor){
+        Marker m2= mMap.addMarker(new MarkerOptions().position(drawCircle(sensor.getLatitude(),  sensor.getLongitude())).
+                title("Sensor").
+                snippet("Rain:"+sensor.isRain()+" Pollution:"+sensor.getPollution()+" Humidity:"+sensor.getHumidity()+"% Temp:"+sensor.getTemperature()+"°C").
+                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        m2.setTag(sensor);
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                clickMarker(marker);
+                return false;
+            }
+        });
+    }
+
+    private void drawCircleReport(final Report reports){
         Marker m =mMap.addMarker(
-                new MarkerOptions().position(pos).
+                new MarkerOptions().position(drawCircle(reports.getLatitude(),reports.getLongitude())).
                         title("Report").
                         snippet(" Rain: "+reports.getRain()+" Weather: "+reports.getWeather()).
                         icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
@@ -286,38 +304,76 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                clickM(marker);
+                clickMarker(marker);
                 return false;
             }
         });
+
     }
 
-    private void clickM(final Marker marker1){
-        final AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
-        builder1.setCancelable(true);
+    private void clickMarker(final Marker marker){
         LayoutInflater inflater = getLayoutInflater();
-        final View v=inflater.inflate(R.layout.activity_dialog_votar, null);
-        builder1.setView(v);
-        //((TextView)v.findViewById(R.id.textmap)).setText(marker1.getSnippet().toString());
+        final View v=inflater.inflate(R.layout.activity_dialog_vote, null);
+        if(marker.getTitle().toString().trim().equals("Report")){
+            final AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+            builder1.setCancelable(true);
+            builder1.setView(v);
+            final AlertDialog alert11 = builder1.create();
+            Report report=(Report) marker.getTag();
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                CharSequence ch=((CharSequence)"Report user");
+                ((Toolbar)v.findViewById(R.id.toolbar3)).setTitle(ch);
+            }*/
+            ((TextView)v.findViewById(R.id.textViewmap)).setVisibility(View.VISIBLE);
+            ((TextView)v.findViewById(R.id.textViewmap)).setText(report.getDateTimeReport().toLocaleString().toString());
+            ((TextView)v.findViewById(R.id.textmap)).setText("Rain: "+report.getRain());
+            ((TextView)v.findViewById(R.id.textmap1)).setText("Weather: "+report.getWeather());
+            ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
+            ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
+            ((ImageButton)v.findViewById(R.id.upbt)).setVisibility(View.VISIBLE);
+            ((Space)v.findViewById(R.id.space1)).setVisibility(View.VISIBLE);
+            ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.upbt).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Report report=(Report) marker.getTag();
+                    report.setLike(report.getLike()+1);
+                    updateReport(report,v);
+                    ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
 
-        final AlertDialog alert11 = builder1.create();
-        v.findViewById(R.id.upbt).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Report rp= marker1.getTag().getClass();
-                //rp.setLike(rp.getLike()+1);
-                //updateReport(rp,v);
-            }
-        });
-        v.findViewById(R.id.downbt).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Report rp=(Report) marker1.getTag();
-                //rp.setDislike(rp.getDislike()+1);
-                //updateReport(rp,v);
-            }
-        });
-        alert11.show();
+                }
+            });
+            v.findViewById(R.id.downbt).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Report report=(Report) marker.getTag();
+                    report.setLike(report.getDislike()+1);
+                    updateReport(report,v);
+                    ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
+                }
+            });
+            alert11.show();
+
+        }else if(marker.getTitle().toString().trim().equals("Sensor")) {
+            final AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+            builder1.setCancelable(true);
+            builder1.setView(v);
+            final AlertDialog alert11 = builder1.create();
+            Sensor sensor = (Sensor) marker.getTag();
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                CharSequence ch=((CharSequence)"Sensor report");
+                ((Toolbar)v.findViewById(R.id.toolbar3)).setTitle(ch);
+            }*/
+            ((TextView) v.findViewById(R.id.textViewmap)).setVisibility(View.GONE);
+            ((TextView) v.findViewById(R.id.textmap)).setText("Rain: " + sensor.isRain());
+            ((TextView) v.findViewById(R.id.textmap1)).setText("Temperature: " + sensor.getTemperature() + "°C");
+            ((TextView) v.findViewById(R.id.textmap2)).setText("Humidity: " + sensor.getHumidity() + "%");
+            ((TextView) v.findViewById(R.id.textmap3)).setText("Pollution: " + sensor.getPollution());
+            ((ImageButton) v.findViewById(R.id.upbt)).setVisibility(View.GONE);
+            ((Space) v.findViewById(R.id.space1)).setVisibility(View.GONE);
+            ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.GONE);
+            alert11.show();
+        }
     }
     private void updateReport(Report report,View v1){
         final RetrofitNetwork rfN = new RetrofitNetwork();
@@ -341,22 +397,5 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(getContext(), "Invalid User.",Toast.LENGTH_SHORT).show();
             }
         },settings.getString(LoginActivity.TOKEN_NAME,""));
-    }
-    private void drawCircleSensor(Sensor sensor){
-
-        mMap.addCircle(new CircleOptions()
-                .center(new LatLng(sensor.getLatitude(), sensor.getLongitude()))
-                .radius(500)
-                .strokeWidth(5)
-                .strokeColor(Color.BLACK)
-                .fillColor(Color.argb(128, 255, 0, 0))
-                .clickable(true));
-        LatLng pos = new LatLng(sensor.getLatitude(),  sensor.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(pos).
-                title("Sensor").
-                snippet("Rain:"+sensor.isRain()+" Pollution:"+sensor.getPollution()+" Humidity:"+sensor.getHumidity()+"% Temp:"+sensor.getTemperature()+"°C").
-                icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
-
     }
 }
