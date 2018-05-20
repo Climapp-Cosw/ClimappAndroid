@@ -7,15 +7,6 @@
     android:background="@android:color/holo_blue_dark"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/common_google_signin_btn_text_dark_disabled"
-        app:subtitleTextColor="@android:color/background_light"
-        app:title="Reports..."
-        app:titleTextColor="@android:color/background_light" />
-
     <ProgressBar
         android:id="@+id/progressBar5"
         style="?android:attr/progressBarStyle"
@@ -23,6 +14,15 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:visibility="gone" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/common_google_signin_btn_text_dark_disabled"
+        app:subtitleTextColor="@android:color/background_light"
+        app:title="Reports information"
+        app:titleTextColor="@android:color/background_light" />
 
     <TableRow
         android:layout_width="match_parent"
@@ -37,31 +37,62 @@
                 android:id="@+id/textViewmap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:fontFamily="casual"
+                android:text="TextView"
+                android:textColor="@android:color/background_light"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/textmap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:fontFamily="casual"
+                android:text="TextView"
+                android:textColor="@android:color/background_light"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/textmap1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:fontFamily="casual"
+                android:text="TextView"
+                android:textColor="@android:color/background_light"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/textmap2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:fontFamily="casual"
+                android:text="TextView"
+                android:textColor="@android:color/background_light"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/textmap3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:fontFamily="casual"
+                android:text="TextView"
+                android:textColor="@android:color/background_light"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageView
