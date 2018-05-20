@@ -321,12 +321,47 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
      * @param lng
      * @return
      */
-    private LatLng drawCircle(double lat, double lng){
+    private LatLng drawCircle(double lat, double lng, int weather, int rain){
+        int color;
+        if(weather==0){
+            //Soleado Amarillo
+            color = Color.argb(128, 255, 255, 0);
+        }
+        else if(weather==1){
+            color = Color.argb(128, 202, 196, 176);
+        }
+        else if(weather==2){
+            color = Color.argb(128, 0, 0, 179);
+        }
+        else if(weather==3){
+            color = Color.argb(128, 204, 204, 255);
+        }
+        else{
+            //Informacion del sensor
+            color = Color.argb(128, 204, 204, 255);
+        }
+
+        int border;
+        //lluvia
+        if(rain==0){
+            border = Color.argb(128, 0, 0, 0);
+        }
+        else if(rain==1){
+            border = Color.argb(128, 217, 217, 217);
+        }
+        else if(rain==2){
+            border = Color.argb(128, 153, 153, 153);
+        }
+        else{
+            border = Color.argb(128, 204, 204, 255);
+        }
+
         mMap.addCircle(new CircleOptions()
                 .center(new LatLng(lat, lng))
                 .radius(450)
-                .strokeWidth(2)
-                .fillColor(Color.argb(128, 25, 72, 189))
+                .strokeWidth(20)
+                .strokeColor(border)
+                .fillColor(color)
                 .clickable(false));
         return new LatLng(lat,  lng);
     }
@@ -336,7 +371,19 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
      * @param sensor
      */
     private void drawCircleSensor(Sensor sensor){
-        Marker m2= mMap.addMarker(new MarkerOptions().position(drawCircle(sensor.getLatitude(),  sensor.getLongitude())).
+        int clima;
+        int rain;
+        if(sensor.isRain()){
+            clima = 1;
+            rain = 0;
+        }
+        else{
+            clima = 0;
+            rain = 4;
+        }
+
+
+        Marker m2= mMap.addMarker(new MarkerOptions().position(drawCircle(sensor.getLatitude(),  sensor.getLongitude(), clima, rain)).
                 title("Sensor").
                 snippet("Rain:"+sensor.isRain()+" Pollution:"+sensor.getPollution()+" Humidity:"+sensor.getHumidity()+"% Temp:"+sensor.getTemperature()+"°C").
                 icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
@@ -356,7 +403,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
      */
     private void drawCircleReport(final Report reports){
         Marker m =mMap.addMarker(
-                new MarkerOptions().position(drawCircle(reports.getLatitude(),reports.getLongitude())).
+                new MarkerOptions().position(drawCircle(reports.getLatitude(),reports.getLongitude(), reports.getWeather(), reports.getRain())).
                         title("Report").
                         snippet(" Rain: "+reports.getRain()+" Weather: "+reports.getWeather()).
                         icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
