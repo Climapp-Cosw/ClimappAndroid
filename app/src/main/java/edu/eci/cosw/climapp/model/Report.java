@@ -27,6 +27,7 @@ public class Report {
      * @param dislike
      * @param like
      */
+
     public Report(double lat, double lon, int clima, User u, Zone z,int dislike,int like,int rain) {
         this.dateTimeReport =  null;
         this.weather = clima;

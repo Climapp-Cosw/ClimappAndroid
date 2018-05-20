@@ -3,11 +3,15 @@ package edu.eci.cosw.climapp.controller;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -29,6 +33,11 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -59,14 +68,18 @@ import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
  * Created by LauraRB on 11/05/2018.
  */
 
-public class fragmentMap extends Fragment implements OnMapReadyCallback {
+public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private GoogleMap mMap;
     private static final int LOCATION_REQUEST_CODE = 1;
     private Coordinate coordinate;
+    private Marker myposition;
     private View view;
     private int rain;
     private int weather;
     private String token;
+    private GoogleApiClient googleApiClient;
+    private static final int ACCESS_LOCATION_PERMISSION_CODE = 10;
+    private final LocationRequest locationRequest = new LocationRequest();
 
 
     @Override
@@ -87,9 +100,19 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
 
         SharedPreferences settings = getActivity().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         token = settings.getString(LoginActivity.TOKEN_NAME, "");
+
+        googleApiClient = new GoogleApiClient.Builder(getContext()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        googleApiClient.connect();
         return view;
     }
 
+    /**
+     * Metodo para seleccionar el clima y crear el reporte
+     * @param view
+     */
     private void selectWeather(View view){
         final AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
         builder1.setCancelable(true);
@@ -123,6 +146,11 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         radioButtons(v);
         alert11.show();
     }
+
+    /**
+     * Metodo para identificar los climas seleccionados para el reporte
+     * @param v
+     */
     private void radioButtons(View v){
         RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.groupradio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
@@ -140,6 +168,12 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         });
 
     }
+
+    /**
+     * Metodo para identificar los climas seleccionados para el reporte
+     * @param v
+     * @return
+     */
     private String checkboxButtons(View v){
         String s="";
         if (((CheckBox)v.findViewById(R.id.windy)).isChecked()) {s+="w";}
@@ -149,6 +183,11 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         return s;
     }
 
+    /**
+     * Metodo que crea un nuevo reporte y lo envia al backend
+     * @param alert
+     * @param v
+     */
     private void addNewReport(final AlertDialog alert,final View v){
         ((ProgressBar)v.findViewById(R.id.progressBar4)).setVisibility(view.VISIBLE);
         SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
@@ -157,7 +196,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
             rfN.userByEmail(settings.getString("userEmail",""), new RequestCallback<User>() {
                 @Override
                 public void onSuccess(User response) {
-                    Report report= new Report(4.6373,-74.09999,weather,response,new Zone(),0,0,rain);
+                    Report report= new Report(coordinate.getLatitude(),coordinate.getLongitude(),weather,response,new Zone(),0,0,rain);
                     rfN.createReport(report, new RequestCallback<ResponseBody>() {
                         @Override
                         public void onSuccess(ResponseBody responseBody) {
@@ -187,47 +226,45 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
             });
         }
     }
+
+    /**
+     * Metodo para pedir permisos
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (permissions.length == 1 &&
-                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        for (int grantResult : grantResults) {
+            if (grantResult == -1) {
+                return;
             }
         }
+        switch (requestCode) {
+            case ACCESS_LOCATION_PERMISSION_CODE:
+                showMyLocation();
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
+
+    /**
+     * Metodo para mostrar el mapa al iniciar actividad o fragmento
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //Poner la ubicacion en la zona y marcador de mi ubicacion y el zoom
-        LatLng cali = new LatLng(4.7829933, -74.04244039999999);
-        googleMap.addMarker(new MarkerOptions().position(cali).title("My position")
-                .rotation(-45).flat(true)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(14).build();
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Mostrar diálogo explicativo
-            } else {
-                // Solicitar permiso
-                ActivityCompat.requestPermissions(
-                        getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        LOCATION_REQUEST_CODE);
-            }
-        }
+        showMyLocation();
         drawReports();
         drawReportsSensor();
     }
 
-
+    /**
+     * Metodo para dibujar todos los reportes existentes
+     */
     private void drawReports(){
         RetrofitNetwork rfN = new RetrofitNetwork();
         rfN.getReports(new RequestCallback<List<Report>>() {
@@ -248,6 +285,9 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Metodo para dibujar los reportes de los sensores
+     */
     private void drawReportsSensor(){
         RetrofitNetwork rfN = new RetrofitNetwork();
         rfN.getReportsSensors(new RequestCallback<List<Sensor>>() {
@@ -269,6 +309,12 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         }, token);
     }
 
+    /**
+     * metodo que dibuja los circulos
+     * @param lat
+     * @param lng
+     * @return
+     */
     private LatLng drawCircle(double lat, double lng){
         mMap.addCircle(new CircleOptions()
                 .center(new LatLng(lat, lng))
@@ -279,6 +325,10 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         return new LatLng(lat,  lng);
     }
 
+    /**
+     * Metodo para dibujar los markers de los sensores
+     * @param sensor
+     */
     private void drawCircleSensor(Sensor sensor){
         Marker m2= mMap.addMarker(new MarkerOptions().position(drawCircle(sensor.getLatitude(),  sensor.getLongitude())).
                 title("Sensor").
@@ -294,6 +344,10 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Metodo para dibujar los markers de los reportes
+     * @param reports
+     */
     private void drawCircleReport(final Report reports){
         Marker m =mMap.addMarker(
                 new MarkerOptions().position(drawCircle(reports.getLatitude(),reports.getLongitude())).
@@ -311,6 +365,10 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
 
     }
 
+    /**
+     * Metodo que se ecuta al dar click en un marker
+     * @param marker
+     */
     private void clickMarker(final Marker marker){
         LayoutInflater inflater = getLayoutInflater();
         final View v=inflater.inflate(R.layout.activity_dialog_vote, null);
@@ -382,6 +440,12 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
             alert11.show();
         }
     }
+
+    /**
+     * Metodo para actualizar el reporte con los votos
+     * @param report
+     * @param v1
+     */
     private void updateReport(Report report,View v1){
         final RetrofitNetwork rfN = new RetrofitNetwork();
         SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
@@ -404,5 +468,98 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(getContext(), "Invalid User.",Toast.LENGTH_SHORT).show();
             }
         },settings.getString(LoginActivity.TOKEN_NAME,""));
+    }
+
+    /**
+     * Metodo para mostrar mi ubicacion
+     */
+    @SuppressLint("MissingPermission")
+    public void showMyLocation() {
+        if (mMap != null) {
+            String[] permissions = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
+            if (hasPermissions(getContext(), permissions)) {
+                mMap.setMyLocationEnabled(true);
+
+                Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                if (lastLocation != null) {
+                    addMarkerAndZoom(lastLocation, "My Location", 15);
+                }
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), permissions, ACCESS_LOCATION_PERMISSION_CODE);
+            }
+        }
+    }
+
+    /**
+     * Permisos
+     * @param context
+     * @param permissions
+     * @return
+     */
+    public static boolean hasPermissions(Context context, String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Agrega el marcador de mi posicion
+     * @param location
+     * @param title
+     * @param zoom
+     */
+    public void addMarkerAndZoom(Location location, String title, int zoom) {
+        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        coordinate = new Coordinate(location.getLatitude(),location.getLongitude());
+        if (myposition!=null){
+            myposition.remove();
+
+        }
+        myposition = mMap.addMarker(new MarkerOptions().position(myLocation).title("My position")
+                .rotation(-45).flat(true)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        //CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(14).build();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, zoom));
+    }
+
+    /**
+     * Connected
+     * @param bundle
+     */
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest,
+                new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        showMyLocation();
+                        stopLocationUpdates();
+                    }
+                });
+    }
+
+    /**
+     * OnConnected
+     * @param i
+     */
+    @Override
+    public void onConnectionSuspended(int i) {
+        stopLocationUpdates();
+    }
+    public void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+            }
+        });
+    }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
