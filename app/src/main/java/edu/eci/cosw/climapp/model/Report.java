@@ -39,20 +39,6 @@ public class Report {
         this.like = like;
         this.rain=rain;
     }
-
-    public Report(int id,double lat, double lon, int clima, User u, Zone z,int dislike,int like,int rain) {
-        this.dateTimeReport =  null;
-        this.weather = clima;
-        this.reportedUser = u;
-        this.zone = z;
-        this.longitude = lon;
-        this.latitude = lat;
-        this.dislike = dislike;
-        this.like = like;
-        this.rain=rain;
-        this.id=id;
-    }
-
     public Report() {
     }
 

@@ -166,7 +166,13 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             startActivity(intent);
             finish();
 
-        }else if (id == R.id.nav_zones) {
+        }else if (id == R.id.nav_map) {
+            toolbar.setTitle("Map");
+            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragments, new fragmentMap());
+            ft.commit();
+        }
+        else if (id == R.id.nav_zones) {
             toolbar.setTitle("Favorite zones");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragments, new fragmentFavoriteZones());

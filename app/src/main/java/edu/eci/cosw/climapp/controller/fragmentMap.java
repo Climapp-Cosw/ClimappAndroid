@@ -6,6 +6,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
@@ -80,6 +82,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
     private GoogleApiClient googleApiClient;
     private static final int ACCESS_LOCATION_PERMISSION_CODE = 10;
     private final LocationRequest locationRequest = new LocationRequest();
+    private boolean click;
 
 
     @Override
@@ -225,6 +228,9 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                 }
             });
         }
+        mMap.clear();
+        drawReports();
+        drawReportsSensor();
     }
 
     /**
@@ -388,33 +394,42 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             ((TextView)v.findViewById(R.id.textmap1)).setText("Weather: "+report.getWeather());
             ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
             ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
-            ((ImageButton)v.findViewById(R.id.upbt)).setVisibility(View.VISIBLE);
-            ((Space)v.findViewById(R.id.space1)).setVisibility(View.VISIBLE);
-            ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.VISIBLE);
+
+            if(((ImageButton)v.findViewById(R.id.upbt)).isEnabled()){
+                ((ImageButton)v.findViewById(R.id.upbt)).setVisibility(View.VISIBLE);
+                ((Space)v.findViewById(R.id.space1)).setVisibility(View.VISIBLE);
+                ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.VISIBLE);
+            }
             v.findViewById(R.id.upbt).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Report report=(Report) marker.getTag();
-                    report.setLike(report.getLike()+1);
-                    updateReport(report,v);
-                    ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
                     ((ImageButton) v.findViewById(R.id.upbt)).setVisibility(View.GONE);
                     ((Space) v.findViewById(R.id.space1)).setVisibility(View.GONE);
                     ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.GONE);
-                    marker.setTag(report);
+                    ((ImageButton) v.findViewById(R.id.upbt)).setEnabled(false);
+                    ((ImageButton)v.findViewById(R.id.downbt)).setEnabled(false);
+                    Report report=(Report) marker.getTag();
+                    report.setLike(report.getLike()+1);
+                    updateReport(report,v);
+                    report.setDateTimeReport(null);
+                    ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
+                    updatePointsUser();
                 }
             });
             v.findViewById(R.id.downbt).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Report report=(Report) marker.getTag();
-                    report.setDislike(report.getDislike()+1);
-                    updateReport(report,v);
-                    ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
                     ((ImageButton) v.findViewById(R.id.upbt)).setVisibility(View.GONE);
                     ((Space) v.findViewById(R.id.space1)).setVisibility(View.GONE);
                     ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.GONE);
-                    marker.setTag(report);
+                    ((ImageButton) v.findViewById(R.id.upbt)).setEnabled(false);
+                    ((ImageButton)v.findViewById(R.id.downbt)).setEnabled(false);
+                    Report report=(Report) marker.getTag();
+                    report.setDislike(report.getDislike()+1);
+                    report.setDateTimeReport(null);
+                    updateReport(report,v);
+                    ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
+                    updatePointsUser();
                 }
             });
             alert11.show();
@@ -439,6 +454,21 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.GONE);
             alert11.show();
         }
+    }
+    private void updatePointsUser(){
+        bdSQLite usdbh = new bdSQLite(getContext(), 1);
+        SQLiteDatabase db = usdbh.getWritableDatabase();
+        usdbh.onUpgrade(db,1, 1);
+        SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
+        db.execSQL("UPDATE users SET points=points+1 WHERE email='"+settings.getString("userEmail","")+"' ");
+        Cursor c = db.rawQuery(" SELECT * FROM users WHERE email='"+settings.getString("userEmail","")+"' ", null);
+        if (c.moveToFirst()) {
+            //Recorremos el cursor hasta que no haya más registros
+            do {
+                ((TextView)view.findViewById(R.id.textpoints)).setText(String.valueOf(c.getInt(4)));
+            } while(c.moveToNext());
+        }
+        db.close();
     }
 
     /**
@@ -498,9 +528,12 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
      */
     public static boolean hasPermissions(Context context, String[] permissions) {
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
-                return false;
+            if (context!=null){
+                if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_DENIED) {
+                    return false;
+                }
             }
+
         }
         return true;
     }
@@ -516,13 +549,13 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         coordinate = new Coordinate(location.getLatitude(),location.getLongitude());
         if (myposition!=null){
             myposition.remove();
-
+        }else{
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, zoom));
         }
         myposition = mMap.addMarker(new MarkerOptions().position(myLocation).title("My position")
                 .rotation(-45).flat(true)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        //CameraPosition cameraPosition = CameraPosition.builder().target(cali).zoom(14).build();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, zoom));
+
     }
 
     /**

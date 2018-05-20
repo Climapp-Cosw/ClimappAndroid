@@ -202,7 +202,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
     private void insertUserBD(){
-        bdSQLite usdbh = new bdSQLite(this, 1);
+        bdSQLite usdbh = new bdSQLite(getBaseContext(), 1);
         SQLiteDatabase db = usdbh.getWritableDatabase();
 
         usdbh.onUpgrade(db,1, 1);
