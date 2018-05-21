@@ -1,15 +1,12 @@
 package edu.eci.cosw.climapp.controller;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,12 +23,9 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
 import android.widget.Space;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 
 import com.google.android.gms.common.ConnectionResult;
@@ -44,7 +38,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -63,8 +56,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import edu.eci.cosw.climapp.DirectionsJSONParser;
 import edu.eci.cosw.climapp.R;
+import edu.eci.cosw.climapp.maps.DirectionsJSONParser;
 import edu.eci.cosw.climapp.model.Coordinate;
 import edu.eci.cosw.climapp.model.Report;
 import edu.eci.cosw.climapp.model.Sensor;

@@ -1,4 +1,4 @@
-package edu.eci.cosw.climapp;
+package edu.eci.cosw.climapp.maps;
 
 import com.google.android.gms.maps.model.LatLng;
 
