@@ -74,8 +74,8 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         ConfigInitialUser();
+        SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         //----------------------------------------------------------------------------------
         //inicio fragmento mapa1
 
@@ -96,7 +96,7 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
         SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         bdSQLite usdbh = new bdSQLite(this, 1);
         SQLiteDatabase db = usdbh.getReadableDatabase();
-        Cursor c = db.rawQuery(" SELECT * FROM users WHERE email='"+settings.getString("userEmail","")+"' ", null);
+        Cursor c = db.rawQuery(" SELECT * FROM users WHERE email='"+settings.getString("userEmail","")+"'", null);
         if (c.moveToFirst()) {
             //Recorremos el cursor hasta que no haya más registros
             do {
@@ -116,6 +116,7 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+            ConfigInitialUser();
         } else {
             super.onBackPressed();
         }
@@ -125,6 +126,7 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
+        ConfigInitialUser();
         return true;
     }
 
@@ -154,10 +156,17 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
         if (id == R.id.nav_about) {
             // Handle the camera action
+
         } else if (id == R.id.nav_close) {
+            bdSQLite usdbh = new bdSQLite(this, 1);
+            SQLiteDatabase db = usdbh.getWritableDatabase();
+            db.execSQL("DROP TABLE users");
+            usdbh.onCreate(db);
+            db.close();
             SharedPreferences settings = getSharedPreferences(LoginActivity.PREFS_NAME, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString(LoginActivity.TOKEN_NAME, "");
@@ -165,6 +174,8 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
+
+
 
         }else if (id == R.id.nav_map) {
             toolbar.setTitle("Map");

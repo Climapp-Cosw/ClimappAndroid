@@ -22,7 +22,7 @@
         android:id="@+id/progressBar4"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="57dp"
+        android:layout_height="73dp"
         android:layout_weight="1"
         android:visibility="gone" />
 
@@ -45,21 +45,21 @@
                     android:layout_width="136dp"
                     android:layout_height="86dp"
                     android:contentDescription="@string/rain"
-                    android:src="@android:drawable/btn_star" />
+                    android:src="@mipmap/ic_launcher_tunder" />
 
                 <ImageView
                     android:id="@+id/hailstoneImg"
                     android:layout_width="128dp"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/hailstone"
-                    android:src="@android:drawable/btn_star" />
+                    android:src="@mipmap/ic_launcher_hail" />
 
                 <ImageView
                     android:id="@+id/thunderstormImg"
                     android:layout_width="132dp"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/thunderstorm"
-                    android:src="@android:drawable/btn_star" />
+                    android:src="@mipmap/ic_launcher_rain" />
 
             </TableRow>
 
@@ -104,88 +104,92 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="203dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/cloudyImg"
-                    android:layout_width="137dp"
+                    android:layout_width="match_parent"
                     android:layout_height="93dp"
                     android:contentDescription="@string/cloudy"
-                    android:src="@android:drawable/btn_star" />
-
-                <CheckBox
-                    android:id="@+id/cloudy"
-                    android:layout_width="132dp"
-                    android:layout_height="match_parent"
-                    android:text="@string/cloudy"
-                    android:textColor="@android:color/background_light" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    android:src="@mipmap/ic_launcher_cloudy" />
 
                 <ImageView
                     android:id="@+id/sunnyImg"
-                    android:layout_width="137dp"
+                    android:layout_width="match_parent"
                     android:layout_height="91dp"
                     android:contentDescription="@string/sunny"
-                    android:src="@android:drawable/btn_star" />
-
-                <CheckBox
-                    android:id="@+id/sunny"
-                    android:layout_width="130dp"
-                    android:layout_height="match_parent"
-                    android:text="@string/sunny"
-                    android:textColor="@android:color/background_light" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    android:src="@mipmap/ic_launcher_sunny" />
 
                 <ImageView
                     android:id="@+id/icyImg"
-                    android:layout_width="135dp"
+                    android:layout_width="match_parent"
                     android:layout_height="95dp"
                     android:contentDescription="@string/icy"
-                    android:src="@android:drawable/btn_star" />
-
-                <CheckBox
-                    android:id="@+id/icy"
-                    android:layout_width="132dp"
-                    android:layout_height="match_parent"
-                    android:text="@string/icy"
-                    android:textColor="@android:color/background_light" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    android:src="@mipmap/ic_launcher_icy" />
 
                 <ImageView
                     android:id="@+id/windyImg"
-                    android:layout_width="132dp"
+                    android:layout_width="match_parent"
                     android:layout_height="97dp"
                     android:contentDescription="@string/windy"
-                    android:src="@android:drawable/btn_star"
+                    android:src="@mipmap/ic_launcher_windy"
                     android:textColor="@android:color/background_light" />
+            </LinearLayout>
 
-                <CheckBox
-                    android:id="@+id/windy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/windy"
-                    android:textColor="@android:color/background_light" />
-            </TableRow>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:id="@+id/groupradio1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RadioButton
+                        android:id="@+id/cloudy"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/cloudy"
+                        android:textColor="@android:color/background_light" />
+
+                    <RadioButton
+                        android:id="@+id/sunny"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/sunny"
+                        android:textColor="@android:color/background_light" />
+
+                    <RadioButton
+                        android:id="@+id/icy"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/icy"
+                        android:textColor="@android:color/background_light" />
+
+                    <RadioButton
+                        android:id="@+id/windy"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/windy"
+                        android:textColor="@android:color/background_light" />
+                </RadioGroup>
+
+            </LinearLayout>
+
         </LinearLayout>
+
+
     </ScrollView>
 
     <LinearLayout

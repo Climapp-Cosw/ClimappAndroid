@@ -148,6 +148,24 @@ public class RetrofitNetwork implements Network {
     }
 
     @Override
+    public void updatePointsUser(final int id, final RequestCallback<User> requestCallback, String token) {
+        addSecureTokenInterceptor(token);
+        backgroundExecutor.execute( new Runnable()        {
+            @Override
+            public void run()            {
+                Call<User> call = networkService.updatePointsUser(id);
+                try                {
+                    Response<User> execute= call.execute();
+                    requestCallback.onSuccess( execute.body() );
+                }
+                catch ( IOException e )                {
+                    requestCallback.onFailed( new NetworkException(null, e ) );
+                }
+            }
+        } );
+    }
+
+    @Override
     public void getReports(final RequestCallback<List<Report>> requestCallback) {
         backgroundExecutor.execute( new Runnable()        {
             @Override

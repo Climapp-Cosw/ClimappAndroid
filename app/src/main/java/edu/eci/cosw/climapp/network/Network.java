@@ -39,5 +39,7 @@ public interface Network {
 
     void updateReport(Report report, RequestCallback<Report> requestCallback, String token);
 
+    void updatePointsUser(int id, RequestCallback<User> requestCallback, String token);
+    
     void getReportsSensors(RequestCallback<List<Sensor>> requestCallback, String token);
 }

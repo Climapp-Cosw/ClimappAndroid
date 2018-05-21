@@ -41,6 +41,9 @@ public interface NetworkService {
     @POST( "reports/" )
     Call<Report> updateReport(@Body Report report);
 
+    @POST( "users/points/{id}" )
+    Call<User> updatePointsUser(@Path("id")int id);
+
     @GET( "reports/" )
     Call<List<Report>> getReports();
 

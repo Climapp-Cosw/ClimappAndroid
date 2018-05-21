@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -109,6 +110,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         locationRequest.setFastestInterval(5000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         googleApiClient.connect();
+        click=false;
         return view;
     }
 
@@ -123,6 +125,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         final View v=inflater.inflate(R.layout.activity_dialog_report, null);
         builder1.setView(v);
         final AlertDialog alert11 = builder1.create();
+        radioButtons(v);
         v.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,10 +135,9 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         v.findViewById(R.id.acept).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String s=checkboxButtons(v);
-                if(s!=""){
+                if(weather!=-1 && rain!=-1){
+                    ((ProgressBar)v.findViewById(R.id.progressBar4)).setVisibility(view.VISIBLE);
                     addNewReport(alert11,v);
-
                 }else{
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage("Please select a weather");
@@ -146,7 +148,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
 
             }
         });
-        radioButtons(v);
         alert11.show();
     }
 
@@ -155,6 +156,8 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
      * @param v
      */
     private void radioButtons(View v){
+        rain=-1;
+        weather=-1;
         RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.groupradio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
@@ -166,24 +169,27 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                     rain=2;
                 }else if (checkedId == R.id.tunderstorm){
                     rain=3;
-                }
+                }/*else if (checkedId == R.id.norain){
+                    rain=0;
+                }*/
             }
         });
+        RadioGroup radioGroup1 = (RadioGroup) v.findViewById(R.id.groupradio1);
+        radioGroup1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.windy){
+                    weather=3;
+                }else if (checkedId == R.id.sunny){
+                    weather=0;
+                }else if (checkedId == R.id.icy){
+                    weather=2;
+                }else if (checkedId == R.id.cloudy){
+                    weather=1;
+                }
 
-    }
-
-    /**
-     * Metodo para identificar los climas seleccionados para el reporte
-     * @param v
-     * @return
-     */
-    private String checkboxButtons(View v){
-        String s="";
-        if (((CheckBox)v.findViewById(R.id.windy)).isChecked()) {s+="w";}
-        if (((CheckBox)v.findViewById(R.id.sunny)).isChecked()) {s+="s";}
-        if (((CheckBox)v.findViewById(R.id.cloudy)).isChecked()) {s+="c";}
-        if (((CheckBox)v.findViewById(R.id.icy)).isChecked()) {s+="i";}
-        return s;
+            }
+        });
     }
 
     /**
@@ -192,20 +198,21 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
      * @param v
      */
     private void addNewReport(final AlertDialog alert,final View v){
-        ((ProgressBar)v.findViewById(R.id.progressBar4)).setVisibility(view.VISIBLE);
+
         SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         if(settings.getString("userEmail","")!=""){
             final RetrofitNetwork rfN = new RetrofitNetwork();
             rfN.userByEmail(settings.getString("userEmail",""), new RequestCallback<User>() {
                 @Override
                 public void onSuccess(User response) {
+                    updatePointsUser(v);
                     Report report= new Report(coordinate.getLatitude(),coordinate.getLongitude(),weather,response,new Zone(),0,0,rain);
                     rfN.createReport(report, new RequestCallback<ResponseBody>() {
                         @Override
                         public void onSuccess(ResponseBody responseBody) {
-                            alert.dismiss();
                             getActivity().runOnUiThread(new Runnable() {
                                 public void run() {
+                                    alert.dismiss();
                                     ((ProgressBar)v.findViewById(R.id.progressBar4)).setVisibility(view.GONE);
                                     final AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
                                     builder2.setMessage("Report created");
@@ -436,7 +443,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                 ((Toolbar)v.findViewById(R.id.toolbar3)).setTitle(ch);
             }*/
             ((TextView)v.findViewById(R.id.textViewmap)).setVisibility(View.VISIBLE);
-            ((TextView)v.findViewById(R.id.textViewmap)).setText(report.getDateTimeReport().toLocaleString().toString());
+            ((TextView)v.findViewById(R.id.textViewmap)).setText(report.getDateTimeReport().toString());
             ((TextView)v.findViewById(R.id.textmap)).setText("Rain: "+report.getRain());
             ((TextView)v.findViewById(R.id.textmap1)).setText("Weather: "+report.getWeather());
             ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
@@ -460,7 +467,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                     updateReport(report,v);
                     report.setDateTimeReport(null);
                     ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
-                    updatePointsUser();
+                    updatePointsUser(v);
                 }
             });
             v.findViewById(R.id.downbt).setOnClickListener(new View.OnClickListener() {
@@ -476,7 +483,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                     report.setDateTimeReport(null);
                     updateReport(report,v);
                     ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
-                    updatePointsUser();
+                    updatePointsUser(v);
                 }
             });
             alert11.show();
@@ -502,21 +509,43 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             alert11.show();
         }
     }
-    private void updatePointsUser(){
+    private void updatePointsUser(View v){
+        v.findViewById(R.id.progressBar5).setVisibility(View.VISIBLE);
         bdSQLite usdbh = new bdSQLite(getContext(), 1);
         SQLiteDatabase db = usdbh.getWritableDatabase();
-        usdbh.onUpgrade(db,1, 1);
+        SQLiteDatabase db2 = usdbh.getReadableDatabase();
         SharedPreferences settings = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
-        db.execSQL("UPDATE users SET points=points+1 WHERE email='"+settings.getString("userEmail","")+"' ");
-        Cursor c = db.rawQuery(" SELECT * FROM users WHERE email='"+settings.getString("userEmail","")+"' ", null);
+        db.execSQL("UPDATE users SET points=points+1 WHERE email='"+settings.getString("userEmail","")+"'");
+        Cursor c = db2.rawQuery(" SELECT * FROM users WHERE email='"+settings.getString("userEmail","")+"'", null);
+        int id=-1;/*
+        NavigationView navigationView = (NavigationView)fin.(R.id.nav_view);
+        View hView = navigationView.getHeaderView(0);
+        TextView txtpoint = (TextView) hView.findViewById(R.id.textpoints);*/
         if (c.moveToFirst()) {
             //Recorremos el cursor hasta que no haya más registros
             do {
-                ((TextView)view.findViewById(R.id.textpoints)).setText(String.valueOf(c.getInt(4)));
+               id=c.getInt(0);
+               //txtpoint.setText(String.valueOf(c.getInt(4)));
             } while(c.moveToNext());
         }
         db.close();
+        final RetrofitNetwork rfN = new RetrofitNetwork();
+        final int finalId = id;
+        rfN.updatePointsUser(id, new RequestCallback<User>() {
+            @Override
+            public void onSuccess(User response) {
+                Log.d("User update points", String.valueOf(finalId));
+            }
+            @Override
+            public void onFailed(NetworkException e) {
+                Toast.makeText(getContext(), "Invalid User.",Toast.LENGTH_SHORT).show();
+            }
+        },settings.getString(LoginActivity.TOKEN_NAME,""));
+        v.findViewById(R.id.progressBar5).setVisibility(View.GONE);
+
     }
+
+
 
     /**
      * Metodo para actualizar el reporte con los votos
@@ -546,6 +575,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             }
         },settings.getString(LoginActivity.TOKEN_NAME,""));
     }
+
 
     /**
      * Metodo para mostrar mi ubicacion

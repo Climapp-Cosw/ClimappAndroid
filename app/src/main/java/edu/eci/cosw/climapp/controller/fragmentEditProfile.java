@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
@@ -53,6 +55,7 @@ import edu.eci.cosw.climapp.network.RetrofitNetwork;
 
 public class fragmentEditProfile extends Fragment {
     private View view;
+    private View view2;
     private EditText txtname, txtemail, txt_points, txt_level;
     private ImageView imguser;
     private ProgressBar progress;
@@ -79,12 +82,15 @@ public class fragmentEditProfile extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        view2 = inflater.inflate(R.layout.activity_main, container, false);
+
         txtname = (EditText) view.findViewById(R.id.txt_name);
         txtemail = (EditText)view.findViewById(R.id.txt_email);
         txt_points = (EditText)view.findViewById(R.id.txt_points);
         txt_level = (EditText)view.findViewById(R.id.txt_level);
         progress = (ProgressBar)view.findViewById(R.id.progressBarLevel);
         imguser =(ImageView) view.findViewById(R.id.profilePicture);
+
         btn_save = (Button) view.findViewById(R.id.btn_save);
         btn_back = (Button) view.findViewById(R.id.btn_back);
         btn_selectPhoto = (ImageButton) view.findViewById(R.id.btn_image);
@@ -332,6 +338,7 @@ public class fragmentEditProfile extends Fragment {
         user.setEmail(txtemail.getText().toString());
         user.setName(txtname.getText().toString());
         //user.setPassword(txt.getText().toString());
+        view.findViewById(R.id.progressBarperfil).setVisibility(View.VISIBLE);
         RetrofitNetwork rfN = new RetrofitNetwork();
         rfN.updateUser(user.getId(), new RequestCallback<User>() {
             @Override
@@ -345,18 +352,20 @@ public class fragmentEditProfile extends Fragment {
                 SQLiteDatabase db = usdbh.getWritableDatabase();
                 db.execSQL(" UPDATE users SET img='"+user.getImage()+"', email='"+user.getEmail()+"', name='"+user.getName()+"' WHERE id="+String.valueOf(user.getId())+";");
                 db.close();
-
                 Handler uiHandler = new Handler(Looper.getMainLooper());
+                ConfigbarUser();
                 uiHandler.post(new Runnable(){
                     @Override
                     public void run() {
+                        view.findViewById(R.id.progressBarperfil).setVisibility(View.GONE);
                         final android.support.v7.app.AlertDialog.Builder builder2 = new android.support.v7.app.AlertDialog.Builder(getActivity());
                         builder2.setMessage("Updated user");
                         final android.support.v7.app.AlertDialog alert2 =builder2.create();
                         alert2.show();
                     }
                 });
-                //goToMain();
+                goToMain();
+
             }
 
             @Override
@@ -364,11 +373,34 @@ public class fragmentEditProfile extends Fragment {
                 Toast.makeText(getContext(), "An error occured.", Toast.LENGTH_SHORT).show();
             }
         }, token, user);
+
     }
 
     public void goToMain() {
         Intent intent = new Intent(getContext(), MainMapReport.class);
         startActivity(intent);
+
+    }
+
+    public void ConfigbarUser() {
+        Handler uiHandler = new Handler(Looper.getMainLooper());
+        uiHandler.post(new Runnable(){
+            @Override
+            public void run() {
+                NavigationView navigationView = (NavigationView) view2.findViewById(R.id.nav_view);
+                //con esto generamos el usuario en el header del menu-------------------------------
+                View hView = navigationView.getHeaderView(0);
+                TextView txtnamebar = (TextView) hView.findViewById(R.id.textuser);
+                TextView txtemailbar = (TextView) hView.findViewById(R.id.textemail);
+                ImageView imguserbar = (ImageView) hView.findViewById(R.id.imageViewuser);
+                txtnamebar.setText(txtname.getText().toString());
+                txtemailbar.setText(txtemail.getText().toString());
+                if(urlFinal!=null){
+                    Picasso.with(getContext()).load(user.getImage()).into(imguserbar);
+                }
+            }
+        });
+
     }
 
 

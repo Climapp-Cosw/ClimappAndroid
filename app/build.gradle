@@ -4,10 +4,11 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "edu.eci.cosw.climapp"
-        minSdkVersion 20
+        minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true // This line here
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
