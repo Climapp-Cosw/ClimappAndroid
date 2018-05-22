@@ -145,8 +145,10 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
             finish();*/
             toolbar.setTitle("Map");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragments, new fragmentMap());
-            ft.commit();
+            String tag = ft.getClass().getSimpleName();
+            ft.addToBackStack( tag );
+            ft.replace( R.id.fragments, new fragmentMap(),tag);
+            ft.commitAllowingStateLoss();
         }
 
         return super.onOptionsItemSelected(item);
@@ -180,19 +182,26 @@ public class MainMapReport extends AppCompatActivity  implements NavigationView.
         }else if (id == R.id.nav_map) {
             toolbar.setTitle("Map");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragments, new fragmentMap());
-            ft.commit();
+            /*String tag = ft.getClass().getSimpleName();
+            ft.addToBackStack( tag );*/
+            ft.replace( R.id.fragments, new fragmentMap()/*, tag*/ );
+            ft.commitAllowingStateLoss();
         }
         else if (id == R.id.nav_zones) {
             toolbar.setTitle("Favorite zones");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragments, new fragmentFavoriteZones());
-            ft.commit();
+            String tag = ft.getClass().getSimpleName();
+            ft.addToBackStack( tag );
+            ft.replace( R.id.fragments, new fragmentFavoriteZones(), tag );
+            ft.commitAllowingStateLoss();
+
         } else if (id == R.id.nav_edit_profile) {
             toolbar.setTitle("Edit Profile");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragments, new fragmentEditProfile());
-            ft.commit();
+            String tag = ft.getClass().getSimpleName();
+            ft.addToBackStack( tag );
+            ft.replace( R.id.fragments, new fragmentEditProfile(), tag );
+            ft.commitAllowingStateLoss();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
