@@ -696,6 +696,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                     mMap.clear();
                     drawReports();
                     drawReportsSensor();
+                    ubico = false;
                     Log.i("ENTROOO!!!!!","1");
                 }
 
