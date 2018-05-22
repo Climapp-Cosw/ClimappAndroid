@@ -163,13 +163,12 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
      * @param v
      */
     private void radioButtons(View v){
-        rain=-1;
+        rain=0;
         weather=-1;
         RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.groupradio);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                rain=0;
                 if (checkedId == R.id.rain){
                     rain=1;
                 }else if (checkedId == R.id.hailstone){
@@ -520,7 +519,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         }
     }
     private void updatePointsUser(View v){
-        v.findViewById(R.id.progressBar5).setVisibility(View.VISIBLE);
+        //((ProgressBar)v.findViewById(R.id.progressBar5)).setVisibility(View.VISIBLE);
         bdSQLite usdbh = new bdSQLite(getContext(), 1);
         SQLiteDatabase db = usdbh.getWritableDatabase();
         SQLiteDatabase db2 = usdbh.getReadableDatabase();
@@ -551,7 +550,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                 Toast.makeText(getContext(), "Invalid User.",Toast.LENGTH_SHORT).show();
             }
         },settings.getString(LoginActivity.TOKEN_NAME,""));
-        v.findViewById(R.id.progressBar5).setVisibility(View.GONE);
+        //((ProgressBar)v.findViewById(R.id.progressBar5)).setVisibility(View.GONE);
 
     }
 
@@ -728,7 +727,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                 if (markerPoints.size() == 1) {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 } else if (markerPoints.size() == 2) {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 }
 
                 // Add new marker to the Google Map Android API V2
