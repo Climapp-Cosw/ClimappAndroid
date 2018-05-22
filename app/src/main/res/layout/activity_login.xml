@@ -9,14 +9,6 @@
     tools:context="edu.eci.cosw.climapp.controller.LoginActivity">
 
     <!-- Login progress -->
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:visibility="visible"
-        app:title="Log in"
-        app:titleTextColor="@color/common_google_signin_btn_text_dark_default" />
 
     <ProgressBar
         android:id="@+id/login_progress"
@@ -26,6 +18,15 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:visibility="visible"
+        app:title="Log in"
+        app:titleTextColor="@color/common_google_signin_btn_text_dark_default" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,6 +35,12 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="215dp"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/logo" />
         <ScrollView
             android:id="@+id/login_form"
             android:layout_width="match_parent"
@@ -46,17 +53,18 @@
                 android:orientation="vertical">
 
 
-                    <AutoCompleteTextView
-                        android:id="@+id/email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="casual"
-                        android:hint="@string/prompt_email"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:textColor="@android:color/background_light"
-                        android:textColorLink="@android:color/holo_blue_light"
-                        android:textStyle="bold" />
+                <AutoCompleteTextView
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="casual"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="@android:color/background_light"
+                    android:textColorHint="@android:color/background_light"
+                    android:textColorLink="@android:color/background_light"
+                    android:textStyle="bold" />
 
 
 
@@ -114,11 +122,7 @@
             </LinearLayout>
         </ScrollView>
 
-        <ImageView
-            android:layout_width="314dp"
-            android:layout_height="215dp"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/logo" />
+
 
     </LinearLayout>
 
