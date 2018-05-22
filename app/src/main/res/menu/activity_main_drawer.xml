@@ -11,7 +11,7 @@
         <item
             android:id="@+id/nav_edit_profile"
             android:icon="@drawable/ic_account_circle_black_24dp"
-            android:title="My account senttings" />
+            android:title="My profile" />
         <item
             android:id="@+id/nav_zones"
             android:icon="@drawable/ic_favorite_black_24dp"
@@ -19,14 +19,14 @@
 
     </group>
 
-    <item android:title='...'>
+    <item android:title=''>
         <menu>
             <item
                 android:id="@+id/nav_about"
-                android:title="About Climapp" />
+                android:title="Version 1" />
             <item
                 android:id="@+id/nav_close"
-                android:title="Close session" />
+                android:title="Log-out" />
         </menu>
     </item>
 
