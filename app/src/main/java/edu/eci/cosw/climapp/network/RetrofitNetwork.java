@@ -27,8 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetrofitNetwork implements Network {
-    private static final String BASE_URL = "http://10.0.2.2:8080/";
-    //private static final String BASE_URL = "http://192.168.0.15:8080/";
+    private static final String BASE_URL = "http://35.166.65.91:8080/";
     private NetworkService networkService;
 
     private ExecutorService backgroundExecutor = Executors.newFixedThreadPool( 1 );
