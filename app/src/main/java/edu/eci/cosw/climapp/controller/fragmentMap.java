@@ -53,9 +53,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.DatagramPacket;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -107,7 +109,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                 selectWeather(view);
             }
         });
-
 
         SharedPreferences settings = getActivity().getSharedPreferences(LoginActivity.PREFS_NAME, 0);
         token = settings.getString(LoginActivity.TOKEN_NAME, "");
@@ -280,8 +281,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
         drawReports();
         drawReportsSensor();
         drawRoute();
-
-
     }
 
     /**
@@ -428,7 +427,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             @Override
             public boolean onMarkerClick(Marker marker) {
                 clickMarker(marker);
-                return false;
+                return true;
             }
         });
 
@@ -447,10 +446,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             builder1.setView(v);
             final AlertDialog alert11 = builder1.create();
             Report report=(Report) marker.getTag();
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                CharSequence ch=((CharSequence)"Report user");
-                ((Toolbar)v.findViewById(R.id.toolbar3)).setTitle(ch);
-            }*/
             ((TextView)v.findViewById(R.id.textViewmap)).setVisibility(View.VISIBLE);
             ((TextView)v.findViewById(R.id.textViewmap)).setText(report.getDateTimeReport().toString());
             ((TextView)v.findViewById(R.id.textmap)).setText("Rain: "+report.getRain());
@@ -458,11 +453,11 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
             ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
 
-            if(((ImageButton)v.findViewById(R.id.upbt)).isEnabled()){
-                ((ImageButton)v.findViewById(R.id.upbt)).setVisibility(View.VISIBLE);
-                ((Space)v.findViewById(R.id.space1)).setVisibility(View.VISIBLE);
-                ((ImageButton)v.findViewById(R.id.downbt)).setVisibility(View.VISIBLE);
-            }
+            /*
+            ((ImageButton) v.findViewById(R.id.upbt)).setVisibility(View.VISIBLE);
+            ((Space) v.findViewById(R.id.space1)).setVisibility(View.VISIBLE);
+            ((ImageButton) v.findViewById(R.id.downbt)).setVisibility(View.VISIBLE);
+            */
             v.findViewById(R.id.upbt).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -473,10 +468,13 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                     ((ImageButton)v.findViewById(R.id.downbt)).setEnabled(false);
                     Report report=(Report) marker.getTag();
                     report.setLike(report.getLike()+1);
-                    updateReport(report,v);
+                    Date olddate=report.getDateTimeReport();
                     report.setDateTimeReport(null);
+                    updateReport(report,v);
+                    report.setDateTimeReport(olddate);
                     ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
                     updatePointsUser(v);
+                    click=true;
                 }
             });
             v.findViewById(R.id.downbt).setOnClickListener(new View.OnClickListener() {
@@ -489,10 +487,13 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                     ((ImageButton)v.findViewById(R.id.downbt)).setEnabled(false);
                     Report report=(Report) marker.getTag();
                     report.setDislike(report.getDislike()+1);
+                    Date olddate=report.getDateTimeReport();
                     report.setDateTimeReport(null);
                     updateReport(report,v);
+                    report.setDateTimeReport(olddate);
                     ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
                     updatePointsUser(v);
+                    click=true;
                 }
             });
             alert11.show();
@@ -503,10 +504,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
             builder1.setView(v);
             final AlertDialog alert11 = builder1.create();
             Sensor sensor = (Sensor) marker.getTag();
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                CharSequence ch=((CharSequence)"Sensor report");
-                ((Toolbar)v.findViewById(R.id.toolbar3)).setTitle(ch);
-            }*/
             ((TextView) v.findViewById(R.id.textViewmap)).setVisibility(View.GONE);
             ((TextView) v.findViewById(R.id.textmap)).setText("Rain: " + sensor.isRain());
             ((TextView) v.findViewById(R.id.textmap1)).setText("Temperature: " + sensor.getTemperature() + "°C");
@@ -689,19 +686,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void drawRoute(){
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -722,7 +706,7 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                 MarkerOptions options = new MarkerOptions();
 
                 // Setting the position of the marker
-                options.position(latLng);
+                options.position(latLng).title("Route");
 
                 if (markerPoints.size() == 1) {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
