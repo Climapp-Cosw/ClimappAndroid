@@ -474,7 +474,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                     report.setDateTimeReport(olddate);
                     ((TextView)v.findViewById(R.id.textmap2)).setText("like: "+report.getLike());
                     updatePointsUser(v);
-                    click=true;
                 }
             });
             v.findViewById(R.id.downbt).setOnClickListener(new View.OnClickListener() {
@@ -493,7 +492,6 @@ public class fragmentMap extends Fragment implements OnMapReadyCallback, GoogleA
                     report.setDateTimeReport(olddate);
                     ((TextView)v.findViewById(R.id.textmap3)).setText("Dislike: "+report.getDislike());
                     updatePointsUser(v);
-                    click=true;
                 }
             });
             alert11.show();
